@@ -204,6 +204,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.focused = "stations"
 					m.viewState = "saved"
 					m.menuOpen = false
+					m.stationCursor = 0
 				} else if selectedItem == "Quit" {
 					StopStream()
 					return m, tea.Quit
@@ -312,7 +313,6 @@ func (m model) drawPanes() string {
 	leftContent := fmt.Sprintf("%s\n\n", leftTitle)
 	rightContent := fmt.Sprintf("Now Playing\n\n")
 	stationName := "None"
-	//stationImage := ""
 
 	if m.viewState == "search" {
 		leftContent = "Stations (Search Results)\n\n"
@@ -357,8 +357,8 @@ func (m model) drawPanes() string {
 
 			totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
 			leftContent += fmt.Sprintf("\n\n  --- Page %d of %d ---", m.savedPage + 1, totalPages)
+		}
 	}
-}
 
 	if m.currentStation.Name != "" {
 		stationName = m.currentStation.Name
