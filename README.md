@@ -3,9 +3,9 @@
 
 Termwave is a TUI that searches for internet radio stations and plays them back. It is my first program made in Go, and the first using Bubbletea, so it is still in early-stage development. 
 
-⚠️ Termwave is currently still being developed. While I will be actively adding/fixing features, things may break as I add/fix features.
+⚠️ Termwave is currently still being developed. While I will be actively adding/fixing features, things may break and some things may be removed until I can fix them.
 
-Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required for audio playback!
+Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required for audio playback! Chafa is required for displaying station images.
 
 ### Currently Working:
     * Search for internet radio stations (Using api.radio-browser)
@@ -14,7 +14,7 @@ Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required
     * Icy-Titles work!
 ### Roadmap:
     * Make the UI look better
-    * Implement Kitty image instead of Symbols (Better Quality)
+    * Implement Kitty images instead of Symbols (Better Quality)
     * Implement the rest of the menu options before an actual release
 Will be making releases hopefully in the near-future
 

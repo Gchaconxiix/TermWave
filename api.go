@@ -11,6 +11,7 @@ import (
 )
 
 type Station struct {
+	UUID    string `json:"stationuuid"`
 	Name    string `json:"name"`
 	URL     string `json:"url"`
 	Tags    string `json:"tags"`
@@ -23,11 +24,17 @@ func StationSearch(searchTerm string) ([]Station, error) {
 	safeQuery := url.QueryEscape(searchTerm)
 	endPoint := fmt.Sprintf("http://de1.api.radio-browser.info/json/stations/search?name=%s&limit=20", safeQuery)
 
-	resp, err := http.Get(endPoint)
+	req, err := http.NewRequest("GET", endPoint, nil)
 	if err != nil {
 		return nil, fmt.Errorf("Request failed: %w", err)
 	}
+	req.Header.Set("User-Agent", "TermWave/0.1")
 
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("Request Failed: %w", err)
+	}
 	defer resp.Body.Close() //Defer: Run before function is done
 
 	var stations []Station
@@ -43,9 +50,16 @@ func DownloadImage(imageUrl string) (string, error) {
 		return "", fmt.Errorf("URL empty")
 	}
 
-	resp, err := http.Get(imageUrl)
+	req, err := http.NewRequest("GET", imageUrl, nil)
 	if err != nil {
 		return "", fmt.Errorf("Failed to retrieve image: %w", err)
+	}
+	req.Header.Set("User-Agent", "TermWave/0.1")
+
+	client:= &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("Request Failed: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -66,4 +80,30 @@ func DownloadImage(imageUrl string) (string, error) {
 	}
 
 	return tempPath, nil
+}
+
+func RegisterStationClick(UUID string) error {
+	if UUID == "" {
+		return fmt.Errorf("No Station UUID provided")
+	}
+
+	endPoint := fmt.Sprintf("http://de1.api.radio-browser.info/json/url/%s", UUID)
+
+	req, err := http.NewRequest("POST", endPoint, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("User-Agent", "TermWave/0.1")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("HTTP Error: %s", resp.Status)
+	}
+	return nil
 }

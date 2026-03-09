@@ -13,6 +13,7 @@ type stationsLoadedMsg []Station
 type errMsg struct{ err error }
 type imageLoadMsg string
 type titleUpdateMsg string
+type stationClickMsg string
 var titleChannel = make(chan string, 10) //buffer size
 
 type model struct {
@@ -107,6 +108,16 @@ func waitForTitle(sub chan string) tea.Cmd {
 	}
 }
 
+func sendClickBack(UUID string) tea.Cmd {
+	return func() tea.Msg {
+		err := RegisterStationClick(UUID)
+		if err != nil {
+			return nil
+		}
+		return nil	
+	}
+}
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case stationsLoadedMsg:
@@ -135,6 +146,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case titleUpdateMsg:
 		m.currentTitle = string(msg)
 		return m, waitForTitle(titleChannel)
+
+	case stationClickMsg:
+		return m, nil
 
 	case tea.KeyPressMsg:
 		s := msg.String();
@@ -286,7 +300,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 					m.currentTitle = ""
 					m.currImgData = "" //Reminding myself that the old photo needs to be cleared
-					return m, tea.Batch(m.showImage(), waitForTitle(titleChannel))
+					return m, tea.Batch(m.showImage(), waitForTitle(titleChannel), sendClickBack(m.currentStation.UUID))
 
 				case "q", "esc":
 					StopStream()
@@ -362,17 +376,12 @@ func (m model) drawPanes() string {
 
 	if m.currentStation.Name != "" {
 		stationName = m.currentStation.Name
-		//stationImage = m.currentStation.Image
 	}
 	//Now to modify the right pane code
-	if m.isPlaying {
+
 		rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n%s\n", stationName, m.currentTitle, m.currImgData)
-	} else {
-		if m.currentStation.Name != "" {
-			rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n\n\n\n", stationName, m.currentTitle)
-		} else {
+	if !m.isPlaying && m.currentStation.Name == "" {
 		rightContent = fmt.Sprintf("Please Select a Station... \nSearch for a new station in Station->Add Station")
-		}
 	}
 
 	leftPane  := paneStyle.Width(leftW).Height(paneH).Render(leftContent)
