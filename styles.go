@@ -36,5 +36,9 @@ var (
 		popup = baseBorderStyle.
 			BorderForeground(lipgloss.Color("62")). // Make it pop with a purple border
 			Padding(1, 2)
+
+		playButtonStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("230")).
+			Align(lipgloss.Right)	
 )
 

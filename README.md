@@ -11,10 +11,11 @@ Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required
     * Search for internet radio stations (Using api.radio-browser)
     * Radio Playback using mpv
     * Functionality to Save and Remove Stations has been added
+    * Icy-Titles work!
 ### Roadmap:
-    * Adding live song-titles/ICY metadata
-    * Adding playback-buttons
     * Make the UI look better
+    * Implement Kitty image instead of Symbols (Better Quality)
+    * Implement the rest of the menu options before an actual release
 Will be making releases hopefully in the near-future
 
 ### Usage:
@@ -30,18 +31,21 @@ $ go run .
     * X removes a station
     * Enter for everything else
 
-Be sure you have MPV installed!
+### Requirements:
+
+Be sure you have MPV and chafa installed!
 
 Debian/Ubuntu based:
 ```
 $ sudo apt install mpv
+$ sudo apt install chafa
 ```
 
 Arch
 ```
-sudo pacman -S mpv
+$ sudo pacman -S mpv
+$ sudo pacman -S chafa
 ```
 
 Thank you for trying it out! I hope to make it better in the near future!
-
 

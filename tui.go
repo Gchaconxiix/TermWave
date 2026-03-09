@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
@@ -10,6 +11,9 @@ import (
 
 type stationsLoadedMsg []Station
 type errMsg struct{ err error }
+type imageLoadMsg string
+type titleUpdateMsg string
+var titleChannel = make(chan string, 10) //buffer size
 
 type model struct {
 	width       		int
@@ -27,7 +31,10 @@ type model struct {
 	focused         string
 	err							error
 	currentStation  Station
+	currentTitle    string
 	searchInput     textinput.Model
+	isPlaying       bool
+	currImgData     string
 }
 
 func initialModel() model {
@@ -46,8 +53,9 @@ func initialModel() model {
 		stations: []Station{},
 		savedStations: loadedStations,
 		stationCursor: 0,
-		focused: "stations",
-		viewState: "saved",
+		focused: "stations", //This tells me which part is in focus
+		viewState: "saved",  //For the left pane
+		isPlaying: false,
 		savedPage: 0,
 		searchInput: ti,
 		activeMenuIndex: 0,
@@ -72,8 +80,31 @@ func fetchStations(query string) tea.Cmd {
 	}
 }
 
-func (m model) Init() tea.Cmd {
-	return nil
+func (m model) Init() tea.Cmd {	
+		return nil
+}
+
+func (m model) showImage() tea.Cmd {
+	return func() tea.Msg {
+		imageUrl, err := DownloadImage(m.currentStation.Image)
+		if err != nil {
+			return nil
+		}
+		cmd := exec.Command("chafa", "-f", "symbols", "--symbols", "all", "--scale", "1", "--color-space", "din99d", "--size", "40x20", imageUrl)
+		currentImage, err := cmd.CombinedOutput()
+		if err != nil {
+			errorMsg := fmt.Sprintf("Kitty failed: %v\nReason: %s\nLink: %s", err, string(currentImage), m.currentStation.Image)
+			return imageLoadMsg(errorMsg)
+		}
+		return imageLoadMsg(string(currentImage))
+	}
+}
+
+func waitForTitle(sub chan string) tea.Cmd {
+	return func() tea.Msg {
+		newTitle := <-sub
+		return titleUpdateMsg(newTitle)
+	}
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -97,6 +128,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.err = msg.err
 		return m, nil
 
+	case imageLoadMsg:
+		m.currImgData = string(msg)
+		return m, nil
+
+	case titleUpdateMsg:
+		m.currentTitle = string(msg)
+		return m, waitForTitle(titleChannel)
+
 	case tea.KeyPressMsg:
 		s := msg.String();
 		if m.focused == "search" { //This is for the search window. Note to me: I should make this less confusing later
@@ -118,9 +157,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, cmd
 
 		}
+		//Keeping my "Supposed to always work" keys here
 		if s == "ctrl+c" || s == "q" || s == "esc" {
 			StopStream()
 			return m, tea.Quit
+		}
+		if s == "space" && m.isPlaying {
+			StopStream()
+			m.isPlaying = false
+		} else if s == "space" && !m.isPlaying && m.currentStation.Name != "" {
+			_ = PlayStream(m.currentStation.URL)
+			m.isPlaying = true
+			return m, waitForTitle(titleChannel)
 		}
 
 		if s == "tab" && !m.menuOpen {
@@ -226,6 +274,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 							}
 					}
 				case "enter":
+					m.isPlaying = true
 					if m.viewState == "search" && len(m.stations) > 0 {
 						m.currentStation = m.stations[m.stationCursor]
 						_ = PlayStream(m.currentStation.URL)
@@ -233,7 +282,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						startIndex := m.savedPage * 16
 						m.currentStation = m.savedStations[startIndex + m.stationCursor]
 						_ = PlayStream(m.currentStation.URL)
-					}	
+					}
+					m.currentTitle = ""
+					m.currImgData = "" //Reminding myself that the old photo needs to be cleared
+					return m, tea.Batch(m.showImage(), waitForTitle(titleChannel))
+
 				case "q", "esc":
 					StopStream()
 					return m, tea.Quit
@@ -257,6 +310,7 @@ func (m model) drawPanes() string {
 	paneH := m.height - 5
 	leftTitle := "Radios"
 	leftContent := fmt.Sprintf("%s\n\n", leftTitle)
+	rightContent := fmt.Sprintf("Now Playing\n\n")
 	stationName := "None"
 	//stationImage := ""
 
@@ -265,7 +319,7 @@ func (m model) drawPanes() string {
 		if m.err != nil {
 			leftContent += fmt.Sprintf("Error fetching stations: %v", m.err)
 		} else if len(m.stations) == 0 {
-			leftContent += "Loading stations..."
+			leftContent += "No Stations Found"
 		} else {
 			for i, s := range m.stations {
 				cursor := "  "
@@ -310,8 +364,17 @@ func (m model) drawPanes() string {
 		stationName = m.currentStation.Name
 		//stationImage = m.currentStation.Image
 	}
+	//Now to modify the right pane code
+	if m.isPlaying {
+		rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n%s\n", stationName, m.currentTitle, m.currImgData)
+	} else {
+		if m.currentStation.Name != "" {
+			rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n\n\n\n", stationName, m.currentTitle)
+		} else {
+		rightContent = fmt.Sprintf("Please Select a Station... \nSearch for a new station in Station->Add Station")
+		}
+	}
 
-	rightContent := fmt.Sprintf("Now Playing\n\nStation: %s\nTitle: ", stationName)
 	leftPane  := paneStyle.Width(leftW).Height(paneH).Render(leftContent)
 	rightPane := paneStyle.Width(rightW).Height(paneH).Render(rightContent)
 	
@@ -337,10 +400,19 @@ func (m model) drawToolbar(height int) string {
 	}
 	toolbarContent := lipgloss.JoinHorizontal(lipgloss.Top, buttons...)
 
+	playbackIcon := fmt.Sprintf("⏹")
+  if m.isPlaying && m.currentStation.Name != "" {
+		playbackIcon = fmt.Sprintf("▶︎")
+	}
+	leftWidth := lipgloss.Width(toolbarContent)
+	remainingWidth := (m.width - 6) - leftWidth
+	playbackButton := playButtonStyle.Width(remainingWidth).Render(playbackIcon)
+	finalContent := lipgloss.JoinHorizontal(lipgloss.Top, toolbarContent, playbackButton)
+
 	toolbar := toolbarStyle.Width(m.width - 2).
 					Width(m.width - 2).
 					Height(height).
-					Render(toolbarContent)
+					Render(finalContent)
 	
 	return toolbar
 }
@@ -396,8 +468,13 @@ func (m model) View() tea.View {
 		layers = append(layers, searchLayer)
 	}
 	compositor := lipgloss.NewCompositor(layers...)
+	finalUI := compositor.Render()
 
-	v := tea.NewView(compositor.Render())
+	if m.currImgData != "" {
+		finalUI += m.currImgData
+	}
+
+	v := tea.NewView(finalUI)
   v.AltScreen = true
 	return v
 }
