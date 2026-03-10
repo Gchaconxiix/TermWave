@@ -12,9 +12,10 @@ Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required
     * Radio Playback using mpv
     * Functionality to Save and Remove Stations has been added
     * Icy-Titles work!
+    * Added artwork via Sixels through Chafa
 ### Roadmap:
     * Make the UI look better
-    * Implement Kitty images instead of Symbols (Better Quality)
+    * Implement Kitty images instead of Sixels
     * Implement the rest of the menu options before an actual release
 Will be making releases hopefully in the near-future
 
@@ -46,6 +47,7 @@ Arch
 $ sudo pacman -S mpv
 $ sudo pacman -S chafa
 ```
+Note: Artwork will NOT appear on Kitty terminal due to Sixels being unsupported
 
 Thank you for trying it out! I hope to make it better in the near future!
 

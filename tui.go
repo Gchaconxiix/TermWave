@@ -91,7 +91,7 @@ func (m model) showImage() tea.Cmd {
 		if err != nil {
 			return nil
 		}
-		cmd := exec.Command("chafa", "-f", "symbols", "--symbols", "all", "--scale", "1", "--color-space", "din99d", "--size", "40x20", imageUrl)
+		cmd := exec.Command("chafa", "-f", "sixels", "--scale", "1", "--size", "40x20", imageUrl)
 		currentImage, err := cmd.CombinedOutput()
 		if err != nil {
 			errorMsg := fmt.Sprintf("Kitty failed: %v\nReason: %s\nLink: %s", err, string(currentImage), m.currentStation.Image)
@@ -379,7 +379,7 @@ func (m model) drawPanes() string {
 	}
 	//Now to modify the right pane code
 
-		rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n%s\n", stationName, m.currentTitle, m.currImgData)
+		rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n\n", stationName, m.currentTitle)
 	if !m.isPlaying && m.currentStation.Name == "" {
 		rightContent = fmt.Sprintf("Please Select a Station... \nSearch for a new station in Station->Add Station")
 	}
@@ -479,8 +479,17 @@ func (m model) View() tea.View {
 	compositor := lipgloss.NewCompositor(layers...)
 	finalUI := compositor.Render()
 
+	//Image needs to be drawn AFTER the rendering for BubbleTea
 	if m.currImgData != "" {
-		finalUI += m.currImgData
+		availW := m.width - 6
+		leftW := int(float64(availW) * 0.6)
+		col := leftW + 5
+		row := 11
+
+		cursorMove := fmt.Sprintf("\x1b[%d;%dH", row, col) //Have to put the exact escape sequence in the right place
+		hideCursor := "\x1b[?25l"
+
+		finalUI += cursorMove + m.currImgData + hideCursor
 	}
 
 	v := tea.NewView(finalUI)
