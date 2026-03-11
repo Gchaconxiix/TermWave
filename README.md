@@ -7,16 +7,17 @@ Termwave is a TUI that searches for internet radio stations and plays them back.
 
 Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required for audio playback! Chafa is required for displaying station images.
 
-### Currently Working:
+### Currently Working/Recent Changes:
     * Search for internet radio stations (Using api.radio-browser)
     * Radio Playback using mpv
     * Functionality to Save and Remove Stations has been added
     * Icy-Titles work!
     * Added artwork via Sixels through Chafa
-### Roadmap:
+### Roadmap/Things to fix:
     * Make the UI look better
-    * Implement Kitty images instead of Sixels
+    * Implement Kitty images instead of Sixels, and center images better
     * Implement the rest of the menu options before an actual release
+    * Fix menu changing
 Will be making releases hopefully in the near-future
 
 ### Usage:
@@ -24,7 +25,8 @@ Will be making releases hopefully in the near-future
 ```
 $ git clone https://github.com/MeatballSteakTips/TermWave.git
 $ cd TermWave
-$ go run .
+$ go build
+$ ./TermWave
 ```
 ### Controls: 
     * Use Tab to switch focus between Toolbar and Stations Pane.

@@ -94,7 +94,7 @@ func (m model) showImage() tea.Cmd {
 		cmd := exec.Command("chafa", "-f", "sixels", "--scale", "1", "--size", "40x20", imageUrl)
 		currentImage, err := cmd.CombinedOutput()
 		if err != nil {
-			errorMsg := fmt.Sprintf("Kitty failed: %v\nReason: %s\nLink: %s", err, string(currentImage), m.currentStation.Image)
+			errorMsg := fmt.Sprintf("Chafa failed: %v\nReason: %s\nLink: %s", err, string(currentImage), m.currentStation.Image)
 			return imageLoadMsg(errorMsg)
 		}
 		return imageLoadMsg(string(currentImage))
@@ -172,7 +172,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		}
 		//Keeping my "Supposed to always work" keys here
-		if s == "ctrl+c" || s == "q" || s == "esc" {
+		if s == "ctrl+c" {
 			StopStream()
 			return m, tea.Quit
 		}
@@ -198,6 +198,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "up", "k":
 				if m.menuCursors[m.activeMenuIndex] > 0 {
 					m.menuCursors[m.activeMenuIndex]--
+				} else if m.menuCursors[m.activeMenuIndex] == 0 {
+					m.menuOpen = false
 				}
 			case "down", "j":
 				maxIndex := len(m.menuItems[m.activeMenuIndex]) - 1
@@ -302,9 +304,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.currImgData = "" //Reminding myself that the old photo needs to be cleared
 					return m, tea.Batch(m.showImage(), waitForTitle(titleChannel), sendClickBack(m.currentStation.UUID))
 
+				case "backspace":
+					if m.viewState == "search" {
+						m.stationCursor = 0
+						m.viewState = "saved"
+					}
+
 				case "q", "esc":
-					StopStream()
-					return m, tea.Quit
+					if m.viewState == "search" {
+						m.stationCursor = 0
+						m.viewState = "saved"
+					} else {
+						StopStream()
+						return m, tea.Quit
+					}
 				}
 			}
 		}
@@ -470,7 +483,7 @@ func (m model) View() tea.View {
 		searchPopup := popup.Render(popupContent)
 		popupWidth := lipgloss.Width(searchPopup)
 		popupHeight := lipgloss.Height(searchPopup)
-		x := (m.width / 2) - (popupWidth / 2)
+		x := (m.width / 2) - (popupWidth / 2) - 4
 		y := (m.height / 2) - (popupHeight / 2)
 
 		searchLayer := lipgloss.NewLayer(searchPopup).X(x).Y(y).Z(2)
@@ -483,8 +496,8 @@ func (m model) View() tea.View {
 	if m.currImgData != "" {
 		availW := m.width - 6
 		leftW := int(float64(availW) * 0.6)
-		col := leftW + 5
-		row := 11
+		col := leftW + 6
+		row := 12
 
 		cursorMove := fmt.Sprintf("\x1b[%d;%dH", row, col) //Have to put the exact escape sequence in the right place
 		hideCursor := "\x1b[?25l"

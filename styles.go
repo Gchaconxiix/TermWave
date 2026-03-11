@@ -39,6 +39,10 @@ var (
 
 		playButtonStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("230")).
-			Align(lipgloss.Right)	
+			Align(lipgloss.Right)
+
+		footerStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("241")).
+			MarginLeft(2)
 )
 
