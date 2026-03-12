@@ -170,6 +170,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.searchInput, cmd = m.searchInput.Update(msg)
 			return m, cmd
 
+		} else if m.focused == "about" {
+			if s == "enter" || s == "esc" || s == "backspace" {
+				m.focused = "stations"
+				return m, nil
+			}
 		}
 		//Keeping my "Supposed to always work" keys here
 		if s == "ctrl+c" {
@@ -221,6 +226,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.viewState = "saved"
 					m.menuOpen = false
 					m.stationCursor = 0
+				} else if selectedItem == "About" {
+					m.focused = "about"
+					m.menuOpen = false
 				} else if selectedItem == "Quit" {
 					StopStream()
 					return m, tea.Quit
@@ -488,6 +496,18 @@ func (m model) View() tea.View {
 
 		searchLayer := lipgloss.NewLayer(searchPopup).X(x).Y(y).Z(2)
 		layers = append(layers, searchLayer)
+	} else if m.focused == "about" {
+		popupContent := fmt.Sprintf("About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.1")
+
+		aboutPopup := popup.Render(popupContent)
+		popupWidth := lipgloss.Width(aboutPopup)
+		popupHeight := lipgloss.Height(aboutPopup)
+		x := (m.width / 2) -(popupWidth / 2) - 4
+		y := (m.height / 2) - (popupHeight / 2)
+
+		aboutLayer := lipgloss.NewLayer(aboutPopup).X(x).Y(y).Z(2)
+		layers = append(layers, aboutLayer)
+
 	}
 	compositor := lipgloss.NewCompositor(layers...)
 	finalUI := compositor.Render()
