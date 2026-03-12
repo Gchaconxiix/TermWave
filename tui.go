@@ -32,7 +32,7 @@ type model struct {
 	focused         string
 	err							error
 	currentStation  Station
-	currentTitle    string
+	currentTitle    string 
 	searchInput     textinput.Model
 	isPlaying       bool
 	currImgData     string
@@ -258,8 +258,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.viewState == "search" {
 					currentListLen = len(m.stations)
 				} else {
-					startIndex := m.savedPage * 16
-					endIndex := startIndex + 16
+					startIndex := m.savedPage * 25
+					endIndex := startIndex + 25
 					if endIndex > len(m.savedStations) {
 						endIndex = len(m.savedStations)
 					}
@@ -274,6 +274,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					if m.stationCursor < currentListLen - 1 {
 						m.stationCursor++
 					}
+				case "right":
+					itemsPerPage := 25
+					totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
+					if(m.savedPage != (totalPages - 1)) {
+						m.savedPage += 1
+					}
+					startIndex := m.savedPage * itemsPerPage
+					itemsOnThisPage := len(m.savedStations) - startIndex
+					if m.stationCursor >= itemsOnThisPage {
+						m.stationCursor = itemsOnThisPage - 1
+					}
+				case "left":
+					if (m.savedPage != 0) {
+						m.savedPage -= 1
+					}
 				case "s":
 					if m.viewState == "search" && len(m.stations) > 0 && m.stations[m.stationCursor].Saved != "*" {
 						m.savedStations = append(m.savedStations, m.stations[m.stationCursor])
@@ -282,7 +297,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 				case "x", "delete":
 					if m.viewState == "saved" && len(m.savedStations) > 0 {
-						startIndex := m.savedPage * 16
+						startIndex := m.savedPage * 25
 						actualIndex := startIndex + m.stationCursor
 
 						m.savedStations = append(m.savedStations[:actualIndex], m.savedStations[actualIndex + 1:]...)
@@ -304,7 +319,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.currentStation = m.stations[m.stationCursor]
 						_ = PlayStream(m.currentStation.URL)
 					} else if m.viewState == "saved" && currentListLen > 0 {
-						startIndex := m.savedPage * 16
+						startIndex := m.savedPage * 25
 						m.currentStation = m.savedStations[startIndex + m.stationCursor]
 						_ = PlayStream(m.currentStation.URL)
 					}
@@ -370,7 +385,7 @@ func (m model) drawPanes() string {
 		if len(m.savedStations) == 0 {
 			leftContent += "No stations saved\nSearch for a station in Stations->Add Station"
 		} else {
-			itemsPerPage := 16
+			itemsPerPage := 25
 
 			startIndex := m.savedPage * itemsPerPage
 			endIndex := startIndex + itemsPerPage
@@ -497,7 +512,7 @@ func (m model) View() tea.View {
 		searchLayer := lipgloss.NewLayer(searchPopup).X(x).Y(y).Z(2)
 		layers = append(layers, searchLayer)
 	} else if m.focused == "about" {
-		popupContent := fmt.Sprintf("About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.1")
+		popupContent := fmt.Sprintf("About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.2")
 
 		aboutPopup := popup.Render(popupContent)
 		popupWidth := lipgloss.Width(aboutPopup)

@@ -13,11 +13,11 @@ Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required
     * Functionality to Save and Remove Stations has been added
     * Icy-Titles work!
     * Added artwork via Sixels through Chafa
+    * Fixed Menus. Each Menu holds 25 Stations
 ### Roadmap/Things to fix:
     * Make the UI look better
     * Implement Kitty images instead of Sixels, and center images better
     * Implement the rest of the menu options before an actual release
-    * Fix menu changing
 Will be making releases hopefully in the near-future
 
 ### Usage:

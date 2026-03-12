@@ -22,7 +22,7 @@ type Station struct {
 
 func StationSearch(searchTerm string) ([]Station, error) {
 	safeQuery := url.QueryEscape(searchTerm)
-	endPoint := fmt.Sprintf("http://de1.api.radio-browser.info/json/stations/search?name=%s&limit=20", safeQuery)
+	endPoint := fmt.Sprintf("http://de1.api.radio-browser.info/json/stations/search?name=%s&limit=25", safeQuery)
 
 	req, err := http.NewRequest("GET", endPoint, nil)
 	if err != nil {
