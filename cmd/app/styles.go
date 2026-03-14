@@ -5,44 +5,43 @@ import (
 )
 
 var (
-		baseBorderStyle = lipgloss.NewStyle().
+	baseBorderStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("240")).
 			Align(lipgloss.Center)
 
-		toolbarStyle = lipgloss.NewStyle().
+	toolbarStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("240")).
 			Align(lipgloss.Top)
 
-		buttonStyle = lipgloss.NewStyle().
+	buttonStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("230")).
 			Background(lipgloss.Color("0")).
 			Padding(0, 1).
 			Bold(true)
 
-		menuStyle = lipgloss.NewStyle().
+	menuStyle = lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder()).
 			BorderForeground(lipgloss.Color("62")).
 			BorderBackground(lipgloss.Color("0")).
 			Padding(0, 1)
-			//.Align(lipgloss.Center)
-		
-		paneStyle = lipgloss.NewStyle().
+		//.Align(lipgloss.Center)
+
+	paneStyle = lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder()).
 			BorderForeground(lipgloss.Color("240")).
-			Padding(1)		
-			
-		popup = baseBorderStyle.
-			BorderForeground(lipgloss.Color("62")). // Make it pop with a purple border
-			Padding(1, 2)
+			Padding(1)
 
-		playButtonStyle = lipgloss.NewStyle().
+	popup = baseBorderStyle.
+		BorderForeground(lipgloss.Color("62")). // Make it pop with a purple border
+		Padding(1, 2)
+
+	playButtonStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("230")).
 			Align(lipgloss.Right)
 
-		footerStyle = lipgloss.NewStyle().
+	footerStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("241")).
 			MarginLeft(2)
 )
-
