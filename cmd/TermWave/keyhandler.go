@@ -1,9 +1,14 @@
 package main
 
-import tea "charm.land/bubbletea/v2"
+import (
+	tea "charm.land/bubbletea/v2"
+)
 
-func (m model) keyHandler(msg string) (tea.Model, tea.Cmd) {
-	s := msg
+func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
+	s := ""
+	if keyMsg, ok := msg.(tea.KeyPressMsg); ok {
+		s = keyMsg.String()
+	}
 	if m.focused == "search" { //This is for the search window. Note to me: I should make this less confusing later
 		switch s {
 		case "esc":
@@ -82,7 +87,7 @@ func (m model) keyHandler(msg string) (tea.Model, tea.Cmd) {
 				m.stationCursor = 0
 
 			case "About":
-				m.focused = "About"
+				m.focused = "about"
 				m.menuOpen = false
 
 			case "Quit":
@@ -203,13 +208,5 @@ func (m model) keyHandler(msg string) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	return m, tea.RequestWindowSize
-}
-
-func (m model) keyReleaseHandler(msg string) (tea.Model, tea.Cmd) {
-	s := msg
-	switch s {
-
-	}
 	return m, tea.RequestWindowSize
 }

@@ -152,11 +152,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tea.KeyPressMsg:
-		currModel, cmd := m.keyHandler(msg.String())
-		return currModel, cmd
-
-	case tea.KeyReleaseMsg:
-		currModel, cmd := m.keyReleaseHandler(msg.String())
+		currModel, cmd := m.keyHandler(msg)
 		return currModel, cmd
 
 	case tea.WindowSizeMsg:
@@ -179,10 +175,7 @@ func (m model) View() tea.View {
 		Height(m.height - toolbarHeight - 4).
 		Render(contentPanes)
 
-	footerText := "\n↑/k up • ↓/j down • tab switch pane • enter play/select • s save • x delete • q quit"
-	footer := footerStyle.Render(footerText)
-
-	ui := lipgloss.JoinVertical(lipgloss.Left, toolbar, border, footer)
+	ui := lipgloss.JoinVertical(lipgloss.Left, toolbar, border)
 	bgLayer := lipgloss.NewLayer(ui).X(0).Y(0).Z(0)
 	layers := []*lipgloss.Layer{bgLayer}
 
@@ -207,8 +200,7 @@ func (m model) View() tea.View {
 		layers = append(layers, menuLayer)
 	}
 
-	switch m.focused {
-	case "search":
+	if m.focused == "search" {
 		popupContent := fmt.Sprintf("Search Station by Name:\n\n%s", m.searchInput.View())
 
 		searchPopup := popup.Render(popupContent)
@@ -219,8 +211,8 @@ func (m model) View() tea.View {
 
 		searchLayer := lipgloss.NewLayer(searchPopup).X(x).Y(y).Z(2)
 		layers = append(layers, searchLayer)
-	case "about":
-		popupContent := "About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.2"
+	} else if m.focused == "about" {
+		popupContent := fmt.Sprintf("About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.2")
 
 		aboutPopup := popup.Render(popupContent)
 		popupWidth := lipgloss.Width(aboutPopup)
@@ -230,8 +222,8 @@ func (m model) View() tea.View {
 
 		aboutLayer := lipgloss.NewLayer(aboutPopup).X(x).Y(y).Z(2)
 		layers = append(layers, aboutLayer)
-	}
 
+	}
 	compositor := lipgloss.NewCompositor(layers...)
 	finalUI := compositor.Render()
 

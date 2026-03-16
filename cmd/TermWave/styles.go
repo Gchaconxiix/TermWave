@@ -5,14 +5,18 @@ import (
 )
 
 var (
+	baseBorderColor    string = "240"
+	toolbarBorderColor string = "240"
+	paneBorderColor    string = "240"
+
 	baseBorderStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("240")).
+			BorderForeground(lipgloss.Color(baseBorderColor)).
 			Align(lipgloss.Center)
 
 	toolbarStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("240")).
+			BorderForeground(lipgloss.Color(toolbarBorderColor)).
 			Align(lipgloss.Top)
 
 	buttonStyle = lipgloss.NewStyle().
@@ -30,10 +34,10 @@ var (
 
 	paneStyle = lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder()).
-			BorderForeground(lipgloss.Color("240")).
+			BorderForeground(lipgloss.Color(paneBorderColor)).
 			Padding(1)
 
-	popup = baseBorderStyle.
+	popup                                         = baseBorderStyle.
 		BorderForeground(lipgloss.Color("62")). // Make it pop with a purple border
 		Padding(1, 2)
 

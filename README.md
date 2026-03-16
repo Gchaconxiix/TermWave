@@ -25,7 +25,7 @@ Will be making releases hopefully in the near-future
 ```
 $ git clone https://github.com/MeatballSteakTips/TermWave.git
 $ cd TermWave
-$ go build ./...
+$ go build ./cmd/TermWave
 $ ./TermWave
 ```
 ### Controls: 
