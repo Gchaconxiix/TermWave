@@ -42,6 +42,15 @@ func StationSearch(searchTerm string) ([]Station, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to parse JSON: %w", err)
 	}
+
+	//Limit the size of the Name to 50
+	for i, value := range stations {
+		runes := []rune(value.Name)
+		if len(runes) > 50 {
+			truncated := runes[0:49]
+			stations[i].Name = string(truncated)
+		}
+	}
 	return stations, nil
 }
 
@@ -56,7 +65,7 @@ func DownloadImage(imageUrl string) (string, error) {
 	}
 	req.Header.Set("User-Agent", "TermWave/0.1")
 
-	client:= &http.Client{}
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("Request Failed: %w", err)

@@ -9,7 +9,8 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if keyMsg, ok := msg.(tea.KeyPressMsg); ok {
 		s = keyMsg.String()
 	}
-	if m.focused == "search" { //This is for the search window. Note to me: I should make this less confusing later
+	switch m.focused { //For the popup windows
+	case "search":
 		switch s {
 		case "esc":
 			m.focused = "stations"
@@ -26,8 +27,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 		var cmd tea.Cmd
 		m.searchInput, cmd = m.searchInput.Update(msg)
 		return m, cmd
-
-	} else if m.focused == "about" {
+	case "about":
 		if s == "enter" || s == "esc" || s == "backspace" {
 			m.focused = "stations"
 			return m, nil

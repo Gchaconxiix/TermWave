@@ -28,9 +28,9 @@ type model struct {
 	stations        []Station
 	savedStations   []Station //Page number, each will hold 8
 	stationCursor   int
-	viewState       string // Tells me if I am in search or saved sations mode
+	viewState       string //Tells me if I am in search or saved sations mode
 	savedPage       int    //Page #s
-	focused         string
+	focused         string //The window that the cursor should be on
 	err             error
 	currentStation  Station
 	currentTitle    string
@@ -200,7 +200,8 @@ func (m model) View() tea.View {
 		layers = append(layers, menuLayer)
 	}
 
-	if m.focused == "search" {
+	switch m.focused {
+	case "search":
 		popupContent := fmt.Sprintf("Search Station by Name:\n\n%s", m.searchInput.View())
 
 		searchPopup := popup.Render(popupContent)
@@ -211,7 +212,7 @@ func (m model) View() tea.View {
 
 		searchLayer := lipgloss.NewLayer(searchPopup).X(x).Y(y).Z(2)
 		layers = append(layers, searchLayer)
-	} else if m.focused == "about" {
+	case "about":
 		popupContent := fmt.Sprintf("About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.2")
 
 		aboutPopup := popup.Render(popupContent)
