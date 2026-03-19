@@ -40,7 +40,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		case "enter":
 			newColor := m.colorInput.Value()
-			updateTheme(newColor)
+			updateBorderColor(newColor)
 			m.focused = "stations"
 			m.colorInput.Blur()
 			return m, nil

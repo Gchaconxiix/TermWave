@@ -48,7 +48,10 @@ var (
 			MarginLeft(2)
 )
 
-func updateTheme(newColor string) {
+func updateBorderColor(newColor string) {
+	if newColor == "" {
+		return
+	}
 	color := lipgloss.Color(newColor)
 
 	baseBorderStyle = baseBorderStyle.BorderForeground(color)

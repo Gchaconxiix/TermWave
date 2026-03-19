@@ -46,8 +46,8 @@ func initialModel() model {
 	ti.CharLimit = 50
 	ti.SetWidth(30)
 	ci := textinput.New()
-	ci.Placeholder = "ANSI 256"
-	ci.CharLimit = 8
+	ci.Placeholder = "ANSI/Hex"
+	ci.CharLimit = 7
 	ci.SetWidth(10)
 
 	//Loading saved stations
@@ -206,43 +206,11 @@ func (m model) View() tea.View {
 		layers = append(layers, menuLayer)
 	}
 
-	switch m.focused {
-	case "search":
-		popupContent := fmt.Sprintf("Search Station by Name:\n\n%s", m.searchInput.View())
-
-		searchPopup := popup.Render(popupContent)
-		popupWidth := lipgloss.Width(searchPopup)
-		popupHeight := lipgloss.Height(searchPopup)
-		x := (m.width / 2) - (popupWidth / 2) - 4
-		y := (m.height / 2) - (popupHeight / 2)
-
-		searchLayer := lipgloss.NewLayer(searchPopup).X(x).Y(y).Z(2)
-		layers = append(layers, searchLayer)
-
-	case "about":
-		popupContent := fmt.Sprintf("About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.2")
-
-		aboutPopup := popup.Render(popupContent)
-		popupWidth := lipgloss.Width(aboutPopup)
-		popupHeight := lipgloss.Height(aboutPopup)
-		x := (m.width / 2) - (popupWidth / 2) - 4
-		y := (m.height / 2) - (popupHeight / 2)
-
-		aboutLayer := lipgloss.NewLayer(aboutPopup).X(x).Y(y).Z(2)
-		layers = append(layers, aboutLayer)
-
-	case "theme":
-		popupContent := fmt.Sprintf("Theme Settings\n\nBorder Color: %s", m.colorInput.View())
-
-		settingsPopup := popup.Render(popupContent)
-		popupWidth := lipgloss.Width(settingsPopup)
-		popupHeight := lipgloss.Height(settingsPopup)
-		x := (m.width / 2) - (popupWidth / 2) - 4
-		y := (m.height / 2) - (popupHeight / 2)
-
-		settingsLayer := lipgloss.NewLayer(settingsPopup).X(x).Y(y).Z(2)
-		layers = append(layers, settingsLayer)
+	//now to call the popup handler
+	if m.focused != "stations" && m.focused != "toolbar" {
+		layers = append(layers, m.renderPopup())
 	}
+
 	compositor := lipgloss.NewCompositor(layers...)
 	finalUI := compositor.Render()
 
