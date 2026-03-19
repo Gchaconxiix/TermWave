@@ -5,18 +5,16 @@ import (
 )
 
 var (
-	baseBorderColor    string = "240"
-	toolbarBorderColor string = "240"
-	paneBorderColor    string = "240"
+	baseColor string = "240"
 
 	baseBorderStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color(baseBorderColor)).
+			BorderForeground(lipgloss.Color(baseColor)).
 			Align(lipgloss.Center)
 
 	toolbarStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color(toolbarBorderColor)).
+			BorderForeground(lipgloss.Color(baseColor)).
 			Align(lipgloss.Top)
 
 	buttonStyle = lipgloss.NewStyle().
@@ -34,7 +32,7 @@ var (
 
 	paneStyle = lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder()).
-			BorderForeground(lipgloss.Color(paneBorderColor)).
+			BorderForeground(lipgloss.Color(baseColor)).
 			Padding(1)
 
 	popup                                         = baseBorderStyle.
@@ -49,3 +47,11 @@ var (
 			Foreground(lipgloss.Color("241")).
 			MarginLeft(2)
 )
+
+func updateTheme(newColor string) {
+	color := lipgloss.Color(newColor)
+
+	baseBorderStyle = baseBorderStyle.BorderForeground(color)
+	toolbarStyle = toolbarStyle.BorderForeground(color)
+	paneStyle = paneStyle.BorderForeground(color)
+}

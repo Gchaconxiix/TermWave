@@ -32,6 +32,22 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.focused = "stations"
 			return m, nil
 		}
+	case "theme":
+		switch s {
+		case "esc":
+			m.focused = "stations"
+			m.colorInput.Blur()
+			return m, nil
+		case "enter":
+			newColor := m.colorInput.Value()
+			updateTheme(newColor)
+			m.focused = "stations"
+			m.colorInput.Blur()
+			return m, nil
+		}
+		var cmd tea.Cmd
+		m.colorInput, cmd = m.colorInput.Update(msg)
+		return m, cmd
 	}
 	//Keeping my "Supposed to always work" keys here
 	if s == "ctrl+c" {
@@ -85,6 +101,12 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.viewState = "saved"
 				m.menuOpen = false
 				m.stationCursor = 0
+
+			case "Theme Settings":
+				m.focused = "theme"
+				m.colorInput.Focus()
+				m.colorInput.SetValue("")
+				m.menuOpen = false
 
 			case "About":
 				m.focused = "about"

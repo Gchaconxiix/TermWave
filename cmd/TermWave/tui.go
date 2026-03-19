@@ -35,6 +35,7 @@ type model struct {
 	currentStation  Station
 	currentTitle    string
 	searchInput     textinput.Model
+	colorInput      textinput.Model
 	isPlaying       bool
 	currImgData     string
 }
@@ -44,6 +45,10 @@ func initialModel() model {
 	ti.Placeholder = "Search Station by Name..."
 	ti.CharLimit = 50
 	ti.SetWidth(30)
+	ci := textinput.New()
+	ci.Placeholder = "ANSI 256"
+	ci.CharLimit = 8
+	ci.SetWidth(10)
 
 	//Loading saved stations
 	loadedStations, err := loadStations()
@@ -60,6 +65,7 @@ func initialModel() model {
 		isPlaying:       false,
 		savedPage:       0,
 		searchInput:     ti,
+		colorInput:      ci,
 		activeMenuIndex: 0,
 		menuOpen:        false,
 		menuCursors:     []int{0, 0, 0},
@@ -212,6 +218,7 @@ func (m model) View() tea.View {
 
 		searchLayer := lipgloss.NewLayer(searchPopup).X(x).Y(y).Z(2)
 		layers = append(layers, searchLayer)
+
 	case "about":
 		popupContent := fmt.Sprintf("About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.2")
 
@@ -224,6 +231,17 @@ func (m model) View() tea.View {
 		aboutLayer := lipgloss.NewLayer(aboutPopup).X(x).Y(y).Z(2)
 		layers = append(layers, aboutLayer)
 
+	case "theme":
+		popupContent := fmt.Sprintf("Theme Settings\n\nBorder Color: %s", m.colorInput.View())
+
+		settingsPopup := popup.Render(popupContent)
+		popupWidth := lipgloss.Width(settingsPopup)
+		popupHeight := lipgloss.Height(settingsPopup)
+		x := (m.width / 2) - (popupWidth / 2) - 4
+		y := (m.height / 2) - (popupHeight / 2)
+
+		settingsLayer := lipgloss.NewLayer(settingsPopup).X(x).Y(y).Z(2)
+		layers = append(layers, settingsLayer)
 	}
 	compositor := lipgloss.NewCompositor(layers...)
 	finalUI := compositor.Render()
