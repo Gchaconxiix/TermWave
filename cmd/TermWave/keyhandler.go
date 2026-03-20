@@ -84,6 +84,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 	//Keeping my "Supposed to always work" keys here
 	if s == "ctrl+c" {
 		StopStream()
+		_ = saveStations(m.savedStations)
 		return m, tea.Quit
 	}
 	if s == "space" && m.isPlaying {
@@ -145,6 +146,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			case "Quit":
 				StopStream()
+				_ = saveStations(m.savedStations)
 				return m, tea.Quit
 
 			default:
@@ -229,6 +231,36 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.stationCursor = 7
 					}
 				}
+			case "+":
+				if m.viewState == "saved" {
+					startIndex := m.savedPage * 25
+					actualIndex := startIndex + m.stationCursor
+
+					if actualIndex > 0 {
+						m.savedStations[actualIndex-1], m.savedStations[actualIndex] = m.savedStations[actualIndex], m.savedStations[actualIndex-1]
+						m.stationCursor--
+
+						if m.stationCursor < 0 && m.savedPage > 0 {
+							m.savedPage--
+							m.stationCursor = 24
+						}
+					}
+				}
+			case "-":
+				if m.viewState == "saved" {
+					startIndex := m.savedPage * 25
+					actualIndex := startIndex + m.stationCursor
+
+					if actualIndex < len(m.savedStations)-1 {
+						m.savedStations[actualIndex+1], m.savedStations[actualIndex] = m.savedStations[actualIndex], m.savedStations[actualIndex+1]
+						m.stationCursor++
+
+						if m.stationCursor > 24 {
+							m.savedPage++
+							m.stationCursor = 0
+						}
+					}
+				}
 			case "enter":
 				m.isPlaying = true
 				if m.viewState == "search" && len(m.stations) > 0 {
@@ -255,6 +287,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.viewState = "saved"
 				} else {
 					StopStream()
+					_ = saveStations(m.savedStations)
 					return m, tea.Quit
 				}
 			}

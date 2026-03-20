@@ -15,6 +15,7 @@ Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required
     * Added artwork via Sixels through Chafa
     * Fixed Menus. Each Menu holds 25 Stations
     * Started Theme Settings Menu
+    * Added station sorting
     * Can now change color of each outline in Theme Settings (ANSI or Hex)
 ### Roadmap/Things to fix:
     * Make the UI look better
@@ -34,6 +35,7 @@ $ ./TermWave
     * Use Tab to switch focus between Toolbar and Stations Pane.
     * S saves a Station
     * X removes a station
+    * Use + and - Keys to move saved stations up and down the list. Saves on Exit
     * Enter for everything else
 
 ### Requirements:
