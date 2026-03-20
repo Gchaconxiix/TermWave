@@ -7,6 +7,12 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
+var (
+	appVer  string = "0.3"
+	author  string = "Gabriel Chacon"
+	contrib string = "Wolfie574"
+)
+
 func main() {
 	p := tea.NewProgram(initialModel())
 	tea.RequestCapability("RGB")
@@ -15,4 +21,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-

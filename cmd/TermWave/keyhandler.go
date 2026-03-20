@@ -167,6 +167,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.menuOpen = true
 			case "q", "esc":
 				StopStream()
+				_ = saveStations(m.savedStations)
 				return m, tea.Quit
 			}
 

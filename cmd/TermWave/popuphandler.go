@@ -14,7 +14,7 @@ func (m model) renderPopup() *lipgloss.Layer {
 	case "search":
 		popupContent = fmt.Sprintf("Search Station by Name:\n\n%s", m.searchInput.View())
 	case "about":
-		popupContent = "About:\nAuthor: Gabriel Chacon\nBug tester: Wolfie574\nVersion: TermWave 0.2"
+		popupContent = fmt.Sprintf("About:\nAuthor: %s\nBug tester: %s\nVersion: TermWave %s", author, contrib, appVer)
 	case "theme":
 		popupContent = fmt.Sprintf("Theme Settings\n\nBorder Color:  %s\nToolbar Color: %s\nPanel Color:   %s", m.borderColor.View(), m.toolbarColor.View(), m.panelColor.View())
 	case "error":
