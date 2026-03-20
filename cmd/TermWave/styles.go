@@ -48,13 +48,28 @@ var (
 			MarginLeft(2)
 )
 
+//Helpers down here
+
 func updateBorderColor(newColor string) {
 	if newColor == "" {
 		return
 	}
 	color := lipgloss.Color(newColor)
-
 	baseBorderStyle = baseBorderStyle.BorderForeground(color)
+}
+
+func updateToolbarColor(newColor string) {
+	if newColor == "" {
+		return
+	}
+	color := lipgloss.Color(newColor)
 	toolbarStyle = toolbarStyle.BorderForeground(color)
+}
+
+func updatePanelColor(newColor string) {
+	if newColor == "" {
+		return
+	}
+	color := lipgloss.Color(newColor)
 	paneStyle = paneStyle.BorderForeground(color)
 }

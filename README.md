@@ -15,7 +15,7 @@ Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required
     * Added artwork via Sixels through Chafa
     * Fixed Menus. Each Menu holds 25 Stations
     * Started Theme Settings Menu
-    * Can now change color of borders in Theme Settings (ANSI or Hex)
+    * Can now change color of each outline in Theme Settings (ANSI or Hex)
 ### Roadmap/Things to fix:
     * Make the UI look better
     * Implement Kitty images instead of Sixels, and center images better

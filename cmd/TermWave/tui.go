@@ -35,7 +35,10 @@ type model struct {
 	currentStation  Station
 	currentTitle    string
 	searchInput     textinput.Model
-	colorInput      textinput.Model
+	borderColor     textinput.Model
+	toolbarColor    textinput.Model
+	panelColor      textinput.Model
+	themeFocusIdx   int
 	isPlaying       bool
 	currImgData     string
 }
@@ -45,10 +48,18 @@ func initialModel() model {
 	ti.Placeholder = "Search Station by Name..."
 	ti.CharLimit = 50
 	ti.SetWidth(30)
-	ci := textinput.New()
-	ci.Placeholder = "ANSI/Hex"
-	ci.CharLimit = 7
-	ci.SetWidth(10)
+	bi := textinput.New()
+	bi.Placeholder = "ANSI/Hex"
+	bi.CharLimit = 7
+	bi.SetWidth(10)
+	tbi := textinput.New()
+	tbi.Placeholder = "ANSI/Hex"
+	tbi.CharLimit = 7
+	tbi.SetWidth(10)
+	pi := textinput.New()
+	pi.Placeholder = "ANSI/Hex"
+	pi.CharLimit = 7
+	pi.SetWidth(10)
 
 	//Loading saved stations
 	loadedStations, err := loadStations()
@@ -65,7 +76,10 @@ func initialModel() model {
 		isPlaying:       false,
 		savedPage:       0,
 		searchInput:     ti,
-		colorInput:      ci,
+		borderColor:     bi,
+		toolbarColor:    tbi,
+		panelColor:      pi,
+		themeFocusIdx:   0,
 		activeMenuIndex: 0,
 		menuOpen:        false,
 		menuCursors:     []int{0, 0, 0},

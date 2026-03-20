@@ -36,18 +36,50 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch s {
 		case "esc":
 			m.focused = "stations"
-			m.colorInput.Blur()
+			m.borderColor.Blur()
+			m.toolbarColor.Blur()
+			m.panelColor.Blur()
 			return m, nil
+		case "up", "shift+tab":
+			m.themeFocusIdx--
+			if m.themeFocusIdx < 0 {
+				m.themeFocusIdx = 2
+			}
+		case "down", "tab":
+			m.themeFocusIdx++
+			if m.themeFocusIdx > 2 {
+				m.themeFocusIdx = 0
+			}
 		case "enter":
-			newColor := m.colorInput.Value()
-			updateBorderColor(newColor)
+			updateBorderColor(m.borderColor.Value())
+			updateToolbarColor(m.toolbarColor.Value())
+			updatePanelColor(m.panelColor.Value())
 			m.focused = "stations"
-			m.colorInput.Blur()
+			m.borderColor.Blur()
+			m.toolbarColor.Blur()
+			m.panelColor.Blur()
 			return m, nil
 		}
+		m.borderColor.Blur()
+		m.toolbarColor.Blur()
+		m.panelColor.Blur()
+		switch m.themeFocusIdx {
+		case 0:
+			m.borderColor.Focus()
+		case 1:
+			m.toolbarColor.Focus()
+		case 2:
+			m.panelColor.Focus()
+		}
+		var cmds []tea.Cmd
 		var cmd tea.Cmd
-		m.colorInput, cmd = m.colorInput.Update(msg)
-		return m, cmd
+		m.borderColor, cmd = m.borderColor.Update(msg)
+		cmds = append(cmds, cmd)
+		m.toolbarColor, cmd = m.toolbarColor.Update(msg)
+		cmds = append(cmds, cmd)
+		m.panelColor, cmd = m.panelColor.Update(msg)
+		cmds = append(cmds, cmd)
+		return m, tea.Batch(cmds...)
 	}
 	//Keeping my "Supposed to always work" keys here
 	if s == "ctrl+c" {
@@ -104,8 +136,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			case "Theme Settings":
 				m.focused = "theme"
-				m.colorInput.Focus()
-				m.colorInput.SetValue("")
+				m.borderColor.Focus()
 				m.menuOpen = false
 
 			case "About":
