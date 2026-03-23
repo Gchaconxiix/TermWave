@@ -11,13 +11,14 @@ func (m model) drawPanes() string {
 	leftW := int(float64(availW) * 0.6)
 	rightW := availW - leftW
 	paneH := m.height - 5
-	leftTitle := "Radios"
-	leftContent := fmt.Sprintf("%s\n\n", leftTitle)
-	rightContent := "Now Playing\n\n"
+	leftTitle := " Radios "
+	rightTitle := " Now Playing "
+	leftContent := ""
+	rightContent := ""
 	stationName := "None"
 
 	if m.viewState == "search" {
-		leftContent = "Stations (Search Results)\n\n"
+		leftTitle = " Search Results "
 		if m.err != nil {
 			leftContent += fmt.Sprintf("Error fetching stations: %v", m.err)
 		} else if len(m.stations) == 0 {
@@ -32,7 +33,7 @@ func (m model) drawPanes() string {
 			}
 		}
 	} else if m.viewState == "saved" { //Saved Stations logic
-		leftContent = "Stations\n\n"
+		leftTitle = " Saved Stations "
 
 		if len(m.savedStations) == 0 {
 			leftContent += "No stations saved\nSearch for a station in Stations->Add Station"
@@ -49,12 +50,16 @@ func (m model) drawPanes() string {
 			pageItems := m.savedStations[startIndex:endIndex]
 
 			for i, s := range pageItems {
-				cursor := "  "
+				//cursor := "  "
+				var currentSelection string
 
 				if m.stationCursor == i && m.focused == "stations" {
-					cursor = "> "
+					currentSelection = stationListStyle.Background(lipgloss.Color("#585858")).Render(s.Name)
+					//cursor = "> "
+				} else {
+					currentSelection = stationListStyle.Render(s.Name)
 				}
-				leftContent += fmt.Sprintf("%s%d. %s %s\n", cursor, (startIndex+i)+1, s.Name, s.Saved)
+				leftContent += fmt.Sprintf("%d. %s %s\n", (startIndex+i)+1, currentSelection, s.Saved)
 			}
 
 			totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
@@ -67,13 +72,18 @@ func (m model) drawPanes() string {
 	}
 	//Now to modify the right pane code
 
-	rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n\n", stationName, m.currentTitle)
 	if !m.isPlaying && m.currentStation.Name == "" {
 		rightContent = "Please Select a Station... \nSearch for a new station in Station->Add Station"
+	} else {
+		rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n\n", stationName, m.currentTitle)
 	}
+	styledLeftTitle := titleBadgeStyle.Render(leftTitle)
+	styledRightTitle := titleBadgeStyle.Render(rightTitle)
+	finalLeftContent := fmt.Sprintf("%s\n\n%s", styledLeftTitle, leftContent)
+	finalRightContent := fmt.Sprintf("%s\n\n%s", styledRightTitle, rightContent)
 
-	leftPane := paneStyle.Width(leftW).Height(paneH).Render(leftContent)
-	rightPane := paneStyle.Width(rightW).Height(paneH).Render(rightContent)
+	leftPane := paneStyle.Width(leftW).Height(paneH).Render(finalLeftContent)
+	rightPane := paneStyle.Width(rightW).Height(paneH).Render(finalRightContent)
 
 	return lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
 }

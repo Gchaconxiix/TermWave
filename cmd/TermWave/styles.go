@@ -7,10 +7,11 @@ import (
 )
 
 var (
-	hasDarkBG         = lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
-	lightDark         = lipgloss.LightDark(hasDarkBG)
-	greenCheck        = lightDark(lipgloss.Color("#43BF6D"), lipgloss.Color("#73F59F"))
-	baseColor  string = "240"
+	hasDarkBG              = lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
+	lightDark              = lipgloss.LightDark(hasDarkBG)
+	greenCheck             = lightDark(lipgloss.Color("#43BF6D"), lipgloss.Color("#73F59F"))
+	purpleBubbletea        = lipgloss.Color("#5F5FD7")
+	baseColor       string = "240"
 
 	baseBorderStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
@@ -23,8 +24,8 @@ var (
 			Align(lipgloss.Top)
 
 	buttonStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("230")).
-			Background(lipgloss.Color("0")).
+			Foreground(lipgloss.Color("#FFFFD7")).
+			Background(lipgloss.Color("#000000")).
 			Padding(0, 1).
 			Bold(true)
 
@@ -40,8 +41,8 @@ var (
 			BorderForeground(lipgloss.Color(baseColor)).
 			Padding(1)
 
-	popup                                         = baseBorderStyle.
-		BorderForeground(lipgloss.Color("62")). // Make it pop with a purple border
+	popup                                    = baseBorderStyle.
+		BorderForeground(purpleBubbletea). // Make it pop with a purple border
 		Padding(1, 2)
 
 	playButtonStyle = lipgloss.NewStyle().
@@ -56,6 +57,15 @@ var (
 			SetString("✓").
 			Foreground(greenCheck).
 			PaddingRight(1).String()
+
+	titleBadgeStyle = lipgloss.NewStyle().
+			Background(lipgloss.Color("#585858")).
+			Foreground(lipgloss.Color("#ffffD7")).
+			Bold(true).
+			Padding(0, 1)
+	stationListStyle = lipgloss.NewStyle().
+				Background(lipgloss.Color("#000000")).
+				Foreground(lipgloss.Color("#FFFFFF"))
 )
 
 //Helpers down here
