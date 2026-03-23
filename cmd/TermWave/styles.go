@@ -1,11 +1,16 @@
 package main
 
 import (
+	"os"
+
 	lipgloss "charm.land/lipgloss/v2"
 )
 
 var (
-	baseColor string = "240"
+	hasDarkBG         = lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
+	lightDark         = lipgloss.LightDark(hasDarkBG)
+	greenCheck        = lightDark(lipgloss.Color("#43BF6D"), lipgloss.Color("#73F59F"))
+	baseColor  string = "240"
 
 	baseBorderStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
@@ -46,6 +51,11 @@ var (
 	footerStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("241")).
 			MarginLeft(2)
+
+	checkMark = lipgloss.NewStyle().
+			SetString("✓").
+			Foreground(greenCheck).
+			PaddingRight(1).String()
 )
 
 //Helpers down here

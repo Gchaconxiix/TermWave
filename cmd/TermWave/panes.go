@@ -58,7 +58,7 @@ func (m model) drawPanes() string {
 			}
 
 			totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
-			leftContent += fmt.Sprintf("\n\n  --- Page %d of %d ---", m.savedPage+1, totalPages)
+			leftContent += fmt.Sprintf("\n\n  < Page %d of %d >", m.savedPage+1, totalPages)
 		}
 	}
 

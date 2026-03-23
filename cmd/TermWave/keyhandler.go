@@ -209,9 +209,9 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.savedPage -= 1
 				}
 			case "s":
-				if m.viewState == "search" && len(m.stations) > 0 && m.stations[m.stationCursor].Saved != "*" {
+				if m.viewState == "search" && len(m.stations) > 0 && m.stations[m.stationCursor].Saved != checkMark {
 					m.savedStations = append(m.savedStations, m.stations[m.stationCursor])
-					m.stations[m.stationCursor].Saved = "*"
+					m.stations[m.stationCursor].Saved = checkMark
 					_ = saveStations(m.savedStations)
 				}
 			case "x", "delete":

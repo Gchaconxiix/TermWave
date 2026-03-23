@@ -146,7 +146,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		for i, newStation := range msg {
 			for _, savedStation := range m.savedStations {
 				if newStation.URL == savedStation.URL {
-					msg[i].Saved = "*"
+					msg[i].Saved = checkMark
 					break
 				}
 			}
