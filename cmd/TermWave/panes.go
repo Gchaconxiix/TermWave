@@ -25,11 +25,13 @@ func (m model) drawPanes() string {
 			leftContent += "No Stations Found"
 		} else {
 			for i, s := range m.stations {
-				cursor := "  "
+				var currentSelection string
 				if m.stationCursor == i && m.focused == "stations" {
-					cursor = "> "
+					currentSelection = listItemStyle.Background(lipgloss.Color("#585858")).Render(s.Name)
+				} else {
+					currentSelection = listItemStyle.Render(s.Name)
 				}
-				leftContent += fmt.Sprintf("%s%d. %s %s\n", cursor, i+1, s.Name, s.Saved)
+				leftContent += fmt.Sprintf(" %d. %s %s\n", i+1, currentSelection, s.Saved)
 			}
 		}
 	} else if m.viewState == "saved" { //Saved Stations logic
@@ -50,16 +52,14 @@ func (m model) drawPanes() string {
 			pageItems := m.savedStations[startIndex:endIndex]
 
 			for i, s := range pageItems {
-				//cursor := "  "
 				var currentSelection string
 
 				if m.stationCursor == i && m.focused == "stations" {
-					currentSelection = stationListStyle.Background(lipgloss.Color("#585858")).Render(s.Name)
-					//cursor = "> "
+					currentSelection = listItemStyle.Background(lipgloss.Color("#585858")).Render(s.Name)
 				} else {
-					currentSelection = stationListStyle.Render(s.Name)
+					currentSelection = listItemStyle.Render(s.Name)
 				}
-				leftContent += fmt.Sprintf("%d. %s %s\n", (startIndex+i)+1, currentSelection, s.Saved)
+				leftContent += fmt.Sprintf(" %d. %s %s\n", (startIndex+i)+1, currentSelection, s.Saved)
 			}
 
 			totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage

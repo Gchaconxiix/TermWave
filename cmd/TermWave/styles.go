@@ -63,9 +63,8 @@ var (
 			Foreground(lipgloss.Color("#ffffD7")).
 			Bold(true).
 			Padding(0, 1)
-	stationListStyle = lipgloss.NewStyle().
-				Background(lipgloss.Color("#000000")).
-				Foreground(lipgloss.Color("#FFFFFF"))
+	listItemStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#FFFFFF"))
 )
 
 //Helpers down here
