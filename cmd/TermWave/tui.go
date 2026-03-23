@@ -205,11 +205,13 @@ func (m model) View() tea.View {
 
 		menuText := fmt.Sprintf("%s\n\n", m.menuTitles[m.activeMenuIndex])
 		for i, item := range currentItems {
-			cursor := " "
+			var currentSelection string
 			if currentCursor == i {
-				cursor = ">"
+				currentSelection = listItemStyle.Background(lipgloss.Color("#585858")).Render(item)
+			} else {
+				currentSelection = listItemStyle.Render(item)
 			}
-			menuText += fmt.Sprintf(" %s %s\n", cursor, item)
+			menuText += fmt.Sprintf(" %s\n", currentSelection)
 		}
 
 		menu := menuStyle.Background(lipgloss.Color("0")).Render(menuText)

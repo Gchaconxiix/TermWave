@@ -117,8 +117,12 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.menuCursors[m.activeMenuIndex] < maxIndex {
 				m.menuCursors[m.activeMenuIndex]++
 			}
-		case "esc", "q", "left", "right":
+		case "esc", "q":
 			m.menuOpen = false
+		case "right":
+			m.activeMenuIndex = (m.activeMenuIndex + 1) % len(m.menuTitles)
+		case "left":
+			m.activeMenuIndex = ((m.activeMenuIndex - 1) + len(m.menuTitles)) % len(m.menuTitles)
 		case "enter":
 			selectedItem := m.menuItems[m.activeMenuIndex][m.menuCursors[m.activeMenuIndex]]
 
