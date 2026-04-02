@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	appVer  string = "0.3"
+	appVer  string = "0.4"
 	author  string = "Gabriel Chacon"
 	contrib string = "Wolfie574"
 )

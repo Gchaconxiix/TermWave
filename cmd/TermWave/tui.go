@@ -92,51 +92,8 @@ func initialModel() model {
 	}
 }
 
-func fetchStations(query string) tea.Cmd {
-	return func() tea.Msg {
-		stations, err := StationSearch(query)
-		if err != nil {
-			return errMsg{err}
-		}
-		return stationsLoadedMsg(stations)
-	}
-}
-
 func (m model) Init() tea.Cmd {
 	return nil
-}
-
-func (m model) showImage() tea.Cmd {
-	return func() tea.Msg {
-		imageUrl, err := DownloadImage(m.currentStation.Image)
-		if err != nil {
-			return nil
-		}
-		cmd := exec.Command("chafa", "-f", "sixels", "--scale", "1", "--size", "40x20", imageUrl)
-		currentImage, err := cmd.CombinedOutput()
-		if err != nil {
-			errorMsg := fmt.Sprintf("Chafa failed: %v\nReason: %s\nLink: %s", err, string(currentImage), m.currentStation.Image)
-			return imageLoadMsg(errorMsg)
-		}
-		return imageLoadMsg(string(currentImage))
-	}
-}
-
-func waitForTitle(sub chan string) tea.Cmd {
-	return func() tea.Msg {
-		newTitle := <-sub
-		return titleUpdateMsg(newTitle)
-	}
-}
-
-func sendClickBack(UUID string) tea.Cmd {
-	return func() tea.Msg {
-		err := RegisterStationClick(UUID)
-		if err != nil {
-			return nil
-		}
-		return nil
-	}
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -178,6 +135,30 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
+
+		//Margin safety check for Dynamic item lists
+		itemsPerPage := m.getItemsPerPage()
+		if len(m.savedStations) > 0 {
+			totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
+			if m.savedPage >= totalPages {
+				m.savedPage = totalPages - 1 //In case the window resize swallowed the page
+			}
+		} else {
+			m.savedPage = 0
+		}
+
+		startIndex := m.savedPage * itemsPerPage
+		itemsOnPage := len(m.savedStations) - startIndex //Items on the currently selected page
+
+		if itemsOnPage > itemsPerPage {
+			itemsOnPage = itemsPerPage
+		} else if itemsOnPage < 0 {
+			itemsOnPage = 0
+		}
+		//This should prevent the cursor from falling off the bottom
+		if m.stationCursor >= itemsOnPage && itemsOnPage > 0 {
+			m.stationCursor = itemsOnPage - 1
+		}
 	}
 	return m, nil
 }
@@ -246,4 +227,57 @@ func (m model) View() tea.View {
 	v := tea.NewView(finalUI)
 	v.AltScreen = true
 	return v
+}
+
+//Helpers Below
+
+func fetchStations(query string) tea.Cmd {
+	return func() tea.Msg {
+		stations, err := StationSearch(query)
+		if err != nil {
+			return errMsg{err}
+		}
+		return stationsLoadedMsg(stations)
+	}
+}
+
+func (m model) showImage() tea.Cmd {
+	return func() tea.Msg {
+		imageUrl, err := DownloadImage(m.currentStation.Image)
+		if err != nil {
+			return nil
+		}
+		cmd := exec.Command("chafa", "--scale", "1", "--size", "40x20", imageUrl)
+		currentImage, err := cmd.CombinedOutput()
+		if err != nil {
+			errorMsg := fmt.Sprintf("Chafa failed: %v\nReason: %s\nLink: %s", err, string(currentImage), m.currentStation.Image)
+			return imageLoadMsg(errorMsg)
+		}
+		return imageLoadMsg(string(currentImage))
+	}
+}
+
+func waitForTitle(sub chan string) tea.Cmd {
+	return func() tea.Msg {
+		newTitle := <-sub
+		return titleUpdateMsg(newTitle)
+	}
+}
+
+func sendClickBack(UUID string) tea.Cmd {
+	return func() tea.Msg {
+		err := RegisterStationClick(UUID)
+		if err != nil {
+			return nil
+		}
+		return nil
+	}
+}
+
+func (m model) getItemsPerPage() int {
+	items := m.height - 14
+	if items < 1 {
+		return 1
+	}
+	return items
 }

@@ -40,7 +40,7 @@ func (m model) drawPanes() string {
 		if len(m.savedStations) == 0 {
 			leftContent += "No stations saved\nSearch for a station in Stations->Add Station"
 		} else {
-			itemsPerPage := 25
+			itemsPerPage := m.getItemsPerPage()
 
 			startIndex := m.savedPage * itemsPerPage
 			endIndex := startIndex + itemsPerPage

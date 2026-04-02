@@ -17,9 +17,11 @@ Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required
     * Started Theme Settings Menu
     * Added station sorting
     * Can now change color of each outline in Theme Settings (ANSI or Hex)
+    * Added Dynamic List functionaliy. Stations per page will now change based on the current window size
+    * Changed Chafa to automatically select best format based on terminal (Better compatibility)
 ### Roadmap/Things to fix:
     * Make the UI look better
-    * Implement Kitty images instead of Sixels, and center images better
+    * Kitty images still do not work properly. (If you have any ideas please let me know!)
     * Implement the rest of the menu options before an actual release
 Will be making releases hopefully in the near-future
 

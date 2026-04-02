@@ -181,8 +181,9 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.viewState == "search" {
 				currentListLen = len(m.stations)
 			} else {
-				startIndex := m.savedPage * 25
-				endIndex := startIndex + 25
+				itemsPerPage := m.getItemsPerPage()
+				startIndex := m.savedPage * itemsPerPage
+				endIndex := startIndex + itemsPerPage
 				if endIndex > len(m.savedStations) {
 					endIndex = len(m.savedStations)
 				}
@@ -198,7 +199,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.stationCursor++
 				}
 			case "right":
-				itemsPerPage := 25
+				itemsPerPage := m.getItemsPerPage()
 				totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
 				if m.savedPage != (totalPages - 1) {
 					m.savedPage += 1
@@ -238,7 +239,8 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			case "+":
 				if m.viewState == "saved" {
-					startIndex := m.savedPage * 25
+					itemsPerPage := m.getItemsPerPage()
+					startIndex := m.savedPage * itemsPerPage
 					actualIndex := startIndex + m.stationCursor
 
 					if actualIndex > 0 {
@@ -253,7 +255,8 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			case "-":
 				if m.viewState == "saved" {
-					startIndex := m.savedPage * 25
+					itemsPerPage := m.getItemsPerPage()
+					startIndex := m.savedPage * itemsPerPage
 					actualIndex := startIndex + m.stationCursor
 
 					if actualIndex < len(m.savedStations)-1 {
@@ -272,7 +275,8 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.currentStation = m.stations[m.stationCursor]
 					_ = PlayStream(m.currentStation.URL)
 				} else if m.viewState == "saved" && currentListLen > 0 {
-					startIndex := m.savedPage * 25
+					itemsPerPage := m.getItemsPerPage()
+					startIndex := m.savedPage * itemsPerPage
 					m.currentStation = m.savedStations[startIndex+m.stationCursor]
 					_ = PlayStream(m.currentStation.URL)
 				}
