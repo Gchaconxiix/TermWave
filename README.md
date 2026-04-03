@@ -2,18 +2,19 @@
 ### A Terminal-based internet radio player for Linux
 
 Termwave is a TUI that searches for internet radio stations and plays them back. It is my first program made in Go, and the first using Bubbletea, so it is still in early-stage development. 
+Program was made using Go and the BubbleTea V2 framework. It is essentially a frontend for MPV and api.radio-browser.info 
+I wanted something that I can run on both my PC and on a CyberDeck for traveling/camping.
 
 ⚠️ Termwave is currently still being developed. While I will be actively adding/fixing features, things may break and some things may be removed until I can fix them.
-
-Program was made using Go and the BubbleTea V2 framework. ⚠️ MPV is required for audio playback! Chafa is required for displaying station images.
+⚠️ MPV is required for audio playback! Chafa is required for displaying station images.
 
 ### Currently Working/Recent Changes:
     * Search for internet radio stations (Using api.radio-browser)
     * Radio Playback using mpv
     * Functionality to Save and Remove Stations has been added
     * Icy-Titles work!
-    * Added artwork via Sixels through Chafa
-    * Fixed Menus. Each Menu holds 25 Stations
+    * Added artwork through Chafa
+    * Added Documentation Menu
     * Started Theme Settings Menu
     * Added station sorting
     * Can now change color of each outline in Theme Settings (ANSI or Hex)
@@ -55,7 +56,8 @@ Arch
 $ sudo pacman -S mpv
 $ sudo pacman -S chafa
 ```
-Note: Artwork will NOT appear on Kitty terminal due to Sixels being unsupported
+I have had good artwork results running this on Konsole, mlterm and Xterm with vt340 emulation enabled. The program should run on any Terminal Emulator though.
+⚠️ Note: Artwork will NOT appear on Kitty terminal due to Sixels being unsupported
 
 Thank you for trying it out! I hope to make it better in the near future!
 

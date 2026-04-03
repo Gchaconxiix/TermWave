@@ -7,20 +7,21 @@ import (
 )
 
 var (
-	hasDarkBG              = lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
-	lightDark              = lipgloss.LightDark(hasDarkBG)
-	greenCheck             = lightDark(lipgloss.Color("#43BF6D"), lipgloss.Color("#73F59F"))
-	purpleBubbletea        = lipgloss.Color("#5F5FD7")
-	baseColor       string = "240"
+	hasDarkBG       = lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
+	lightDark       = lipgloss.LightDark(hasDarkBG)
+	greenCheck      = lightDark(lipgloss.Color("#43BF6D"), lipgloss.Color("#73F59F"))
+	purpleBubbletea = lipgloss.Color("#5F5FD7")
+	baseColor       = lipgloss.Color("#585858")
+	textColor       = lipgloss.Color("#ffffd7")
 
 	baseBorderStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color(baseColor)).
+			BorderForeground(baseColor).
 			Align(lipgloss.Center)
 
 	toolbarStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color(baseColor)).
+			BorderForeground(baseColor).
 			Align(lipgloss.Top)
 
 	buttonStyle = lipgloss.NewStyle().
@@ -31,26 +32,26 @@ var (
 
 	menuStyle = lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder()).
-			BorderForeground(lipgloss.Color("62")).
+			BorderForeground(purpleBubbletea).
 			BorderBackground(lipgloss.Color("0")).
 			Padding(0, 1)
 		//.Align(lipgloss.Center)
 
 	paneStyle = lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder()).
-			BorderForeground(lipgloss.Color(baseColor)).
+			BorderForeground(baseColor).
 			Padding(1)
 
-	popup                                    = baseBorderStyle.
+	popup = baseBorderStyle.
 		BorderForeground(purpleBubbletea). // Make it pop with a purple border
 		Padding(1, 2)
 
 	playButtonStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("230")).
+			Foreground(textColor).
 			Align(lipgloss.Right)
 
 	footerStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("241")).
+			Foreground(baseColor).
 			MarginLeft(2)
 
 	checkMark = lipgloss.NewStyle().
@@ -59,12 +60,22 @@ var (
 			PaddingRight(1).String()
 
 	titleBadgeStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#585858")).
-			Foreground(lipgloss.Color("#ffffD7")).
+			Background(baseColor).
+			Foreground(textColor).
 			Bold(true).
 			Padding(0, 1)
 	listItemStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#FFFFFF"))
+	docHeaderStyle = lipgloss.NewStyle().
+			Foreground(textColor).
+			Background(purpleBubbletea).
+			Bold(true).
+			Padding(0, 1).
+			MarginBottom(1)
+
+	docKeyStyle = lipgloss.NewStyle().
+			Foreground(purpleBubbletea).
+			Bold(true)
 )
 
 //Helpers down here

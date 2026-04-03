@@ -32,6 +32,11 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.focused = "stations"
 			return m, nil
 		}
+	case "documentation":
+		if s == "enter" || s == "esc" || s == "backspace" {
+			m.focused = "stations"
+			return m, nil
+		}
 	case "theme":
 		switch s {
 		case "esc":
@@ -146,6 +151,10 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			case "About":
 				m.focused = "about"
+				m.menuOpen = false
+
+			case "Documentation":
+				m.focused = "documentation"
 				m.menuOpen = false
 
 			case "Quit":
