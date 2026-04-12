@@ -38,6 +38,12 @@ type model struct {
 	borderColor     textinput.Model
 	toolbarColor    textinput.Model
 	panelColor      textinput.Model
+	manualName      textinput.Model
+	manualLink      textinput.Model
+	manualTags      textinput.Model
+	manualCountry   textinput.Model
+	manualImage     textinput.Model
+	manualFocusIdx  int
 	themeFocusIdx   int
 	isPlaying       bool
 	currImgData     string
@@ -60,6 +66,26 @@ func initialModel() model {
 	pi.Placeholder = "ANSI/Hex"
 	pi.CharLimit = 7
 	pi.SetWidth(10)
+	//manualName
+	mn := textinput.New()
+	mn.Placeholder = "Name of Station..."
+	mn.SetWidth(50)
+	//manualLink
+	ml := textinput.New()
+	ml.Placeholder = "Station/Youtube link..."
+	ml.SetWidth(50)
+	//manualTags
+	mt := textinput.New()
+	mt.Placeholder = "Station Tags (Optional)..."
+	mt.SetWidth(50)
+	//manualCountry
+	mc := textinput.New()
+	mc.Placeholder = "Country of Origin (Optional)..."
+	mc.SetWidth(50)
+	//manualImage
+	mi := textinput.New()
+	mi.Placeholder = "Link/Path to Image (Optional)..."
+	mi.SetWidth(50)
 
 	//Loading saved stations
 	loadedStations, err := loadStations()
@@ -79,13 +105,19 @@ func initialModel() model {
 		borderColor:     bi,
 		toolbarColor:    tbi,
 		panelColor:      pi,
+		manualName:      mn,
+		manualLink:      ml,
+		manualTags:      mt,
+		manualCountry:   mc,
+		manualImage:     mi,
+		manualFocusIdx:  0,
 		themeFocusIdx:   0,
 		activeMenuIndex: 0,
 		menuOpen:        false,
 		menuCursors:     []int{0, 0, 0},
 		menuTitles:      []string{"Stations", "Settings", "Help"},
 		menuItems: [][]string{
-			{"Add Station", "Saved Stations", "Quit"},
+			{"Search Station", "Input Station", "Saved Stations", "Quit"},
 			{"Audio Settings", "Theme Settings", "Preferences"},
 			{"About", "Documentation", "License"},
 		},

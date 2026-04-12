@@ -13,6 +13,8 @@ func (m model) renderPopup() *lipgloss.Layer {
 	switch m.focused {
 	case "search":
 		popupContent = fmt.Sprintf("Search Station by Name:\n\n%s", m.searchInput.View())
+	case "manualEntry":
+		popupContent = m.renderManualEntry()
 	case "about":
 		popupContent = fmt.Sprintf("About:\nAuthor: %s\nBug tester: %s\nVersion: TermWave %s", author, contrib, appVer)
 	case "theme":
@@ -75,5 +77,23 @@ func (m model) renderDocPopup() string {
 		themeKeys,
 		"\nPress [Esc] to close",
 	)
+	return content
+}
+
+func (m model) renderManualEntry() string {
+	title := docHeaderStyle.Render("Input a Station")
+
+	inputFields := lipgloss.JoinVertical(lipgloss.Left,
+		fmt.Sprintf("%s\n", m.manualName.View()),
+		fmt.Sprintf("%s\n", m.manualLink.View()),
+		fmt.Sprintf("%s\n", m.manualTags.View()),
+		fmt.Sprintf("%s\n", m.manualCountry.View()),
+		fmt.Sprintf("%s\n", m.manualImage.View()))
+
+	content := lipgloss.JoinVertical(lipgloss.Left,
+		title,
+		inputFields,
+		"\nPress [Enter] to Add Station")
+
 	return content
 }

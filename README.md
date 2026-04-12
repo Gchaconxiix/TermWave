@@ -20,6 +20,7 @@ I wanted something that I can run on both my PC and on a CyberDeck for traveling
     * Can now change color of each outline in Theme Settings (ANSI or Hex)
     * Added Dynamic List functionaliy. Stations per page will now change based on the current window size
     * Changed Chafa to automatically select best format based on terminal (Better compatibility)
+    * Added Manual Station addition (Also works with Youtube links with yt-dlp)
 ### Roadmap/Things to fix:
     * Make the UI look better
     * Kitty images still do not work properly. (If you have any ideas please let me know!)

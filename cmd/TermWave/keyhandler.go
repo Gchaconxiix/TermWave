@@ -27,6 +27,83 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 		var cmd tea.Cmd
 		m.searchInput, cmd = m.searchInput.Update(msg)
 		return m, cmd
+
+	case "manualEntry":
+		switch s {
+		case "esc":
+			m.focused = "stations"
+			m.manualName.Blur()
+			m.manualLink.Blur()
+			m.manualTags.Blur()
+			m.manualCountry.Blur()
+			m.manualImage.Blur()
+			return m, nil
+		case "enter":
+			if m.manualName.Value() == "" || m.manualLink.Value() == "" {
+				m.focused = "stations"
+				return m, nil
+			}
+			manualStation := Station{
+				UUID:    "",
+				Name:    m.manualName.Value(),
+				URL:     m.manualLink.Value(),
+				Tags:    m.manualTags.Value(),
+				Country: m.manualCountry.Value(),
+				Image:   m.manualImage.Value(),
+				Saved:   "",
+			}
+			m.savedStations = append(m.savedStations, manualStation)
+			_ = saveStations(m.savedStations)
+
+			m.manualName.SetValue("")
+			m.manualLink.SetValue("")
+			m.manualTags.SetValue("")
+			m.manualCountry.SetValue("")
+			m.manualImage.SetValue("")
+
+			m.focused = "stations"
+			return m, nil
+		case "up", "shift+tab":
+			m.manualFocusIdx--
+			if m.manualFocusIdx < 0 {
+				m.manualFocusIdx = 4
+			}
+		case "down", "tab":
+			m.manualFocusIdx++
+			if m.manualFocusIdx > 4 {
+				m.manualFocusIdx = 0
+			}
+		}
+		m.manualName.Blur()
+		m.manualLink.Blur()
+		m.manualTags.Blur()
+		m.manualCountry.Blur()
+		m.manualImage.Blur()
+		switch m.manualFocusIdx {
+		case 0:
+			m.manualName.Focus()
+		case 1:
+			m.manualLink.Focus()
+		case 2:
+			m.manualTags.Focus()
+		case 3:
+			m.manualCountry.Focus()
+		case 4:
+			m.manualImage.Focus()
+		}
+		var cmds []tea.Cmd
+		var cmd tea.Cmd
+		m.manualName, cmd = m.manualName.Update(msg)
+		cmds = append(cmds, cmd)
+		m.manualLink, cmd = m.manualLink.Update(msg)
+		cmds = append(cmds, cmd)
+		m.manualTags, cmd = m.manualTags.Update(msg)
+		cmds = append(cmds, cmd)
+		m.manualCountry, cmd = m.manualCountry.Update(msg)
+		cmds = append(cmds, cmd)
+		m.manualImage, cmd = m.manualImage.Update(msg)
+		cmds = append(cmds, cmd)
+		return m, tea.Batch(cmds...)
 	case "about":
 		if s == "enter" || s == "esc" || s == "backspace" {
 			m.focused = "stations"
@@ -132,10 +209,16 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 			selectedItem := m.menuItems[m.activeMenuIndex][m.menuCursors[m.activeMenuIndex]]
 
 			switch selectedItem {
-			case "Add Station":
+			case "Search Station":
 				m.focused = "search"
 				m.searchInput.Focus()
 				m.searchInput.SetValue("")
+				m.menuOpen = false
+
+			case "Input Station":
+				m.focused = "manualEntry"
+				m.manualName.Focus()
+				m.manualName.SetValue("")
 				m.menuOpen = false
 
 			case "Saved Stations":
