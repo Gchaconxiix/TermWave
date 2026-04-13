@@ -28,7 +28,7 @@ func (m model) renderPopup() *lipgloss.Layer {
 	popupWindow := popup.Render(popupContent)
 	popupWidth := lipgloss.Width(popupWindow)
 	popupHeight := lipgloss.Height(popupWindow)
-	x = (m.width / 2) - (popupWidth / 2) - 4
+	x = (m.width / 2) - (popupWidth / 2)
 	y = (m.height / 2) - (popupHeight / 2)
 
 	popupLayer := lipgloss.NewLayer(popupWindow).X(x).Y(y).Z(2)

@@ -244,7 +244,7 @@ func (m model) View() tea.View {
 	finalUI := compositor.Render()
 
 	//Image needs to be drawn AFTER the rendering for BubbleTea
-	if m.currImgData != "" {
+	if m.currImgData != "" && (m.focused == "stations" || m.focused == "toolbar") {
 		availW := m.width - 6
 		leftW := int(float64(availW) * 0.6)
 		col := leftW + 6
