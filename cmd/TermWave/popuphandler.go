@@ -18,7 +18,7 @@ func (m model) renderPopup() *lipgloss.Layer {
 	case "about":
 		popupContent = fmt.Sprintf("About:\nAuthor: %s\nBug tester: %s\nVersion: TermWave %s", author, contrib, appVer)
 	case "theme":
-		popupContent = fmt.Sprintf("Theme Settings\n\nBorder Color:  %s\nToolbar Color: %s\nPanel Color:   %s", m.borderColor.View(), m.toolbarColor.View(), m.panelColor.View())
+		popupContent = m.renderThemePopup()
 	case "documentation":
 		popupContent = m.renderDocPopup()
 	case "error":
@@ -77,6 +77,22 @@ func (m model) renderDocPopup() string {
 		themeKeys,
 		"\nPress [Esc] to close",
 	)
+	return content
+}
+
+func (m model) renderThemePopup() string {
+	title := docHeaderStyle.Render("Theme Settings")
+
+	inputFields := lipgloss.JoinVertical(lipgloss.Left,
+		fmt.Sprintf("%s\n", m.borderColor.View()),
+		fmt.Sprintf("%s\n", m.toolbarColor.View()),
+		fmt.Sprintf("%s\n", m.panelColor.View()))
+
+	content := lipgloss.JoinVertical(lipgloss.Left,
+		title,
+		inputFields,
+		"\n[Enter] to set, [Esc] to cancel")
+
 	return content
 }
 
