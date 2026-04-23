@@ -1,26 +1,27 @@
+
 # TermWave
 ### A Terminal-based internet radio player for Linux
 
-Termwave is a TUI that searches for internet radio stations and plays them back. It is my first program made in Go, and the first using Bubbletea, so it is still in early-stage development. 
+<img width="1258" height="586" alt="Screenshot_20260423_084434" src="https://github.com/user-attachments/assets/152428a3-ea57-4160-b258-e8c2d20bf24d" />
+
+Termwave is a TUI that organizes internet radio stations and plays them back.
 Program was made using Go and the BubbleTea V2 framework. It is essentially a frontend for MPV and api.radio-browser.info 
-I wanted something that I can run on both my PC and on a CyberDeck for traveling/camping.
+I wanted something that I can run on both my PC and on a very low-power CyberDeck for traveling/camping, so I decided to make this.
 
 ⚠️ Termwave is currently still being developed. While I will be actively adding/fixing features, things may break and some things may be removed until I can fix them.
 ⚠️ MPV is required for audio playback! Chafa is required for displaying station images.
 
 ### Currently Working/Recent Changes:
     * Search for internet radio stations (Using api.radio-browser)
-    * Radio Playback using mpv
     * Functionality to Save and Remove Stations has been added
-    * Icy-Titles work!
     * Added artwork through Chafa
     * Added Documentation Menu
-    * Started Theme Settings Menu
-    * Added station sorting
+    * Added Theme Settings Menu
+    * Added Station Sorting using +/- keys
     * Can now change color of each outline in Theme Settings (ANSI or Hex)
     * Added Dynamic List functionaliy. Stations per page will now change based on the current window size
     * Changed Chafa to automatically select best format based on terminal (Better compatibility)
-    * Added Manual Station addition (Also works with Youtube links with yt-dlp)
+    * Added https Manual Station addition (Also works with Youtube links with yt-dlp)
 ### Roadmap/Things to fix:
     * Make the UI look better
     * Kitty images still do not work properly. (If you have any ideas please let me know!)
@@ -58,7 +59,7 @@ $ sudo pacman -S mpv
 $ sudo pacman -S chafa
 ```
 I have had good artwork results running this on Konsole, mlterm and Xterm with vt340 emulation enabled. The program should run on any Terminal Emulator though.
-⚠️ Note: Artwork will NOT appear on Kitty terminal due to Sixels being unsupported
+⚠️ Note: Artwork does NOT appear on Kitty very well, it is a known issue I am trying to find a solution for.
 
 Thank you for trying it out! I hope to make it better in the near future!
 
