@@ -104,12 +104,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.manualImage, cmd = m.manualImage.Update(msg)
 		cmds = append(cmds, cmd)
 		return m, tea.Batch(cmds...)
-	case "about":
-		if s == "enter" || s == "esc" || s == "backspace" {
-			m.focused = "stations"
-			return m, nil
-		}
-	case "documentation":
+	case "about", "documentation", "license":
 		if s == "enter" || s == "esc" || s == "backspace" {
 			m.focused = "stations"
 			return m, nil
@@ -238,6 +233,9 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			case "Documentation":
 				m.focused = "documentation"
+				m.menuOpen = false
+			case "License":
+				m.focused = "license"
 				m.menuOpen = false
 
 			case "Quit":

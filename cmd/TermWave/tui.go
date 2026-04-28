@@ -118,7 +118,7 @@ func initialModel() model {
 		menuTitles:      []string{"Stations", "Settings", "Help"},
 		menuItems: [][]string{
 			{"Search Station", "Input Station", "Saved Stations", "Quit"},
-			{"Audio Settings", "Theme Settings", "Preferences"},
+			{"Theme Settings", "Station Info"},
 			{"About", "Documentation", "License"},
 		},
 	}

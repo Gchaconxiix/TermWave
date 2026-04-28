@@ -21,6 +21,8 @@ func (m model) renderPopup() *lipgloss.Layer {
 		popupContent = m.renderThemePopup()
 	case "documentation":
 		popupContent = m.renderDocPopup()
+	case "license":
+		popupContent = "Licensed under MIT\nCopyright (c) 2026 Gabriel Chacon\nSee LICENSE file for Terms of Use"
 	case "error":
 		popupContent = "Error: Invalid Entry"
 	}
@@ -56,6 +58,7 @@ func (m model) renderDocPopup() string {
 	mediaKeys := lipgloss.JoinVertical(lipgloss.Left,
 		docLine("s", "Save the currently highlighted station"),
 		docLine("x", "Delete a saved station"),
+		docLine("+/-", "Move Station Up/Down List"),
 		docLine("Space", "Play / Pause stream"),
 	)
 

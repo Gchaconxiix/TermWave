@@ -12,7 +12,7 @@ var (
 	greenCheck      = lightDark(lipgloss.Color("#43BF6D"), lipgloss.Color("#73F59F"))
 	purpleBubbletea = lipgloss.Color("#5F5FD7")
 	baseColor       = lipgloss.Color("#585858")
-	textColor       = lipgloss.Color("#ffffd7")
+	textColor       = lipgloss.Color("#FFFFD7")
 
 	baseBorderStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
@@ -25,7 +25,7 @@ var (
 			Align(lipgloss.Top)
 
 	buttonStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFFFD7")).
+			Foreground(textColor).
 			Background(lipgloss.Color("#000000")).
 			Padding(0, 1).
 			Bold(true)
