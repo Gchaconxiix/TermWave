@@ -19,6 +19,8 @@ func (m model) renderPopup() *lipgloss.Layer {
 		popupContent = fmt.Sprintf("About:\nAuthor: %s\nBug tester: %s\nVersion: TermWave %s", author, contrib, appVer)
 	case "theme":
 		popupContent = m.renderThemePopup()
+	case "info":
+		popupContent = m.renderStationInfo()
 	case "documentation":
 		popupContent = m.renderDocPopup()
 	case "license":
@@ -113,6 +115,33 @@ func (m model) renderManualEntry() string {
 		title,
 		inputFields,
 		"\nPress [Enter] to Add Station")
+
+	return content
+}
+
+func (m model) renderStationInfo() string {
+	title := docHeaderStyle.Render("Station Info")
+	temp := m.currentStation
+	bitrate, err := temp.Bitrate.Int64()
+	if err != nil {
+		bitrate = 0
+	}
+
+	infoLines := lipgloss.JoinVertical(lipgloss.Left,
+		fmt.Sprintf("Name:     %s\n", temp.Name),
+		fmt.Sprintf("Tags:     %s\n", temp.Tags),
+		fmt.Sprintf("Homepage: %s\n", temp.Home),
+		fmt.Sprintf("URL:      %s\n", temp.URL),
+		fmt.Sprintf("Image:    %s\n", temp.Image),
+		fmt.Sprintf("Country:  %s\n", temp.Country),
+		fmt.Sprintf("State:    %s\n", temp.State),
+		fmt.Sprintf("Codec:    %s %dk\n", temp.Codec, bitrate),
+		fmt.Sprintf("UUID:     %s\n", temp.UUID))
+
+	content := lipgloss.JoinVertical(lipgloss.Left,
+		title,
+		infoLines,
+		"\nPress [Esc] to Exit")
 
 	return content
 }

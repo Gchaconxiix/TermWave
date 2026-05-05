@@ -12,12 +12,16 @@ import (
 )
 
 type Station struct {
-	UUID    string `json:"stationuuid"`
-	Name    string `json:"name"`
-	URL     string `json:"url"`
-	Tags    string `json:"tags"`
-	Country string `json:"country"`
-	Image   string `json:"favicon"`
+	UUID    string      `json:"stationuuid"`
+	Name    string      `json:"name"`
+	URL     string      `json:"url"`
+	Home    string      `json:"homepage"`
+	Tags    string      `json:"tags"`
+	Country string      `json:"country"`
+	State   string      `json:"state"`
+	Codec   string      `json:"codec"`
+	Bitrate json.Number `json:"bitrate"`
+	Image   string      `json:"favicon"`
 	Saved   string
 }
 

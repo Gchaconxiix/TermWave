@@ -157,6 +157,12 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.panelColor, cmd = m.panelColor.Update(msg)
 		cmds = append(cmds, cmd)
 		return m, tea.Batch(cmds...)
+
+	case "info":
+		if s == "esc" || s == "enter" {
+			m.focused = "stations"
+			return m, nil
+		}
 	}
 	//Keeping my "Supposed to always work" keys here
 	if s == "ctrl+c" {
@@ -224,6 +230,11 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			case "Theme Settings":
 				m.focused = "theme"
+				m.borderColor.Focus()
+				m.menuOpen = false
+
+			case "Station Info":
+				m.focused = "info"
 				m.borderColor.Focus()
 				m.menuOpen = false
 
