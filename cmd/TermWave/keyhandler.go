@@ -289,16 +289,19 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.stationCursor++
 				}
 			case "right":
-				itemsPerPage := m.getItemsPerPage()
-				totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
-				if m.savedPage != (totalPages - 1) {
-					m.savedPage += 1
+				if m.viewState == "saved" {
+					itemsPerPage := m.getItemsPerPage()
+					totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
+					if m.savedPage != (totalPages - 1) {
+						m.savedPage += 1
+					}
+					startIndex := m.savedPage * itemsPerPage
+					itemsOnThisPage := len(m.savedStations) - startIndex
+					if m.stationCursor >= itemsOnThisPage {
+						m.stationCursor = itemsOnThisPage - 1
+					}
 				}
-				startIndex := m.savedPage * itemsPerPage
-				itemsOnThisPage := len(m.savedStations) - startIndex
-				if m.stationCursor >= itemsOnThisPage {
-					m.stationCursor = itemsOnThisPage - 1
-				}
+
 			case "left":
 				if m.savedPage != 0 {
 					m.savedPage -= 1

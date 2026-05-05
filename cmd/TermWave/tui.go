@@ -169,27 +169,29 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 
 		//Margin safety check for Dynamic item lists
-		itemsPerPage := m.getItemsPerPage()
-		if len(m.savedStations) > 0 {
-			totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
-			if m.savedPage >= totalPages {
-				m.savedPage = totalPages - 1 //In case the window resize swallowed the page
+		if m.viewState == "saved" { //Only works on Saved Pages for now
+			itemsPerPage := m.getItemsPerPage()
+			if len(m.savedStations) > 0 {
+				totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
+				if m.savedPage >= totalPages {
+					m.savedPage = totalPages - 1 //In case the window resize swallowed the page
+				}
+			} else {
+				m.savedPage = 0
 			}
-		} else {
-			m.savedPage = 0
-		}
 
-		startIndex := m.savedPage * itemsPerPage
-		itemsOnPage := len(m.savedStations) - startIndex //Items on the currently selected page
+			startIndex := m.savedPage * itemsPerPage
+			itemsOnPage := len(m.savedStations) - startIndex //Items on the currently selected page
 
-		if itemsOnPage > itemsPerPage {
-			itemsOnPage = itemsPerPage
-		} else if itemsOnPage < 0 {
-			itemsOnPage = 0
-		}
-		//This should prevent the cursor from falling off the bottom
-		if m.stationCursor >= itemsOnPage && itemsOnPage > 0 {
-			m.stationCursor = itemsOnPage - 1
+			if itemsOnPage > itemsPerPage {
+				itemsOnPage = itemsPerPage
+			} else if itemsOnPage < 0 {
+				itemsOnPage = 0
+			}
+			//This should prevent the cursor from falling off the bottom
+			if m.stationCursor >= itemsOnPage && itemsOnPage > 0 {
+				m.stationCursor = itemsOnPage - 1
+			}
 		}
 	}
 	return m, nil
