@@ -88,6 +88,8 @@ func (m model) renderDocPopup() string {
 func (m model) renderThemePopup() string {
 	title := docHeaderStyle.Render("Theme Settings")
 
+	instruction := "Use Hex Values (#FFFFFF) or ANSI\n"
+
 	inputFields := lipgloss.JoinVertical(lipgloss.Left,
 		fmt.Sprintf("%s\n", m.borderColor.View()),
 		fmt.Sprintf("%s\n", m.toolbarColor.View()),
@@ -95,6 +97,7 @@ func (m model) renderThemePopup() string {
 
 	content := lipgloss.JoinVertical(lipgloss.Left,
 		title,
+		instruction,
 		inputFields,
 		"\n[Enter] to set, [Esc] to cancel")
 
@@ -107,9 +110,12 @@ func (m model) renderManualEntry() string {
 	inputFields := lipgloss.JoinVertical(lipgloss.Left,
 		fmt.Sprintf("%s\n", m.manualName.View()),
 		fmt.Sprintf("%s\n", m.manualLink.View()),
+		fmt.Sprintf("%s\n", m.manualHome.View()),
+		fmt.Sprintf("%s\n", m.manualImage.View()),
 		fmt.Sprintf("%s\n", m.manualTags.View()),
 		fmt.Sprintf("%s\n", m.manualCountry.View()),
-		fmt.Sprintf("%s\n", m.manualImage.View()))
+		fmt.Sprintf("%s\n", m.manualState.View()),
+		fmt.Sprintf("%s\n", m.manualCodec.View()))
 
 	content := lipgloss.JoinVertical(lipgloss.Left,
 		title,

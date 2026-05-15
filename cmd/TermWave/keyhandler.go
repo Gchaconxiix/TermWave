@@ -34,9 +34,12 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.focused = "stations"
 			m.manualName.Blur()
 			m.manualLink.Blur()
+			m.manualHome.Blur()
 			m.manualTags.Blur()
 			m.manualCountry.Blur()
 			m.manualImage.Blur()
+			m.manualState.Blur()
+			m.manualCodec.Blur()
 			return m, nil
 		case "enter":
 			if m.manualName.Value() == "" || m.manualLink.Value() == "" {
@@ -47,8 +50,11 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 				UUID:    "",
 				Name:    m.manualName.Value(),
 				URL:     m.manualLink.Value(),
+				Home:    m.manualHome.Value(),
 				Tags:    m.manualTags.Value(),
 				Country: m.manualCountry.Value(),
+				State:   m.manualState.Value(),
+				Codec:   m.manualCodec.Value(),
 				Image:   m.manualImage.Value(),
 				Saved:   "",
 			}
@@ -57,8 +63,11 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			m.manualName.SetValue("")
 			m.manualLink.SetValue("")
+			m.manualHome.SetValue("")
 			m.manualTags.SetValue("")
 			m.manualCountry.SetValue("")
+			m.manualState.SetValue("")
+			m.manualCodec.SetValue("")
 			m.manualImage.SetValue("")
 
 			m.focused = "stations"
@@ -66,18 +75,21 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "up", "shift+tab":
 			m.manualFocusIdx--
 			if m.manualFocusIdx < 0 {
-				m.manualFocusIdx = 4
+				m.manualFocusIdx = 7
 			}
 		case "down", "tab":
 			m.manualFocusIdx++
-			if m.manualFocusIdx > 4 {
+			if m.manualFocusIdx > 7 {
 				m.manualFocusIdx = 0
 			}
 		}
 		m.manualName.Blur()
 		m.manualLink.Blur()
+		m.manualHome.Blur()
 		m.manualTags.Blur()
 		m.manualCountry.Blur()
+		m.manualState.Blur()
+		m.manualCodec.Blur()
 		m.manualImage.Blur()
 		switch m.manualFocusIdx {
 		case 0:
@@ -85,11 +97,17 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case 1:
 			m.manualLink.Focus()
 		case 2:
-			m.manualTags.Focus()
+			m.manualHome.Focus()
 		case 3:
-			m.manualCountry.Focus()
-		case 4:
 			m.manualImage.Focus()
+		case 4:
+			m.manualTags.Focus()
+		case 5:
+			m.manualCountry.Focus()
+		case 6:
+			m.manualState.Focus()
+		case 7:
+			m.manualCodec.Focus()
 		}
 		var cmds []tea.Cmd
 		var cmd tea.Cmd
@@ -97,9 +115,15 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, cmd)
 		m.manualLink, cmd = m.manualLink.Update(msg)
 		cmds = append(cmds, cmd)
+		m.manualHome, cmd = m.manualHome.Update(msg)
+		cmds = append(cmds, cmd)
 		m.manualTags, cmd = m.manualTags.Update(msg)
 		cmds = append(cmds, cmd)
 		m.manualCountry, cmd = m.manualCountry.Update(msg)
+		cmds = append(cmds, cmd)
+		m.manualState, cmd = m.manualState.Update(msg)
+		cmds = append(cmds, cmd)
+		m.manualCodec, cmd = m.manualCodec.Update(msg)
 		cmds = append(cmds, cmd)
 		m.manualImage, cmd = m.manualImage.Update(msg)
 		cmds = append(cmds, cmd)

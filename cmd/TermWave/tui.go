@@ -40,8 +40,11 @@ type model struct {
 	panelColor      textinput.Model
 	manualName      textinput.Model
 	manualLink      textinput.Model
+	manualHome      textinput.Model
 	manualTags      textinput.Model
 	manualCountry   textinput.Model
+	manualState     textinput.Model
+	manualCodec     textinput.Model
 	manualImage     textinput.Model
 	manualFocusIdx  int
 	themeFocusIdx   int
@@ -55,15 +58,15 @@ func initialModel() model {
 	ti.CharLimit = 50
 	ti.SetWidth(30)
 	bi := textinput.New()
-	bi.Placeholder = "ANSI/Hex"
+	bi.Placeholder = "Border"
 	bi.CharLimit = 7
 	bi.SetWidth(10)
 	tbi := textinput.New()
-	tbi.Placeholder = "ANSI/Hex"
+	tbi.Placeholder = "Toolbar"
 	tbi.CharLimit = 7
 	tbi.SetWidth(10)
 	pi := textinput.New()
-	pi.Placeholder = "ANSI/Hex"
+	pi.Placeholder = "Panel"
 	pi.CharLimit = 7
 	pi.SetWidth(10)
 	//manualName
@@ -74,6 +77,10 @@ func initialModel() model {
 	ml := textinput.New()
 	ml.Placeholder = "Station/Youtube link..."
 	ml.SetWidth(50)
+	//manual Home Page
+	mh := textinput.New()
+	mh.Placeholder = "Homepage of Station (Optional)..."
+	mh.SetWidth(50)
 	//manualTags
 	mt := textinput.New()
 	mt.Placeholder = "Station Tags (Optional)..."
@@ -82,6 +89,14 @@ func initialModel() model {
 	mc := textinput.New()
 	mc.Placeholder = "Country of Origin (Optional)..."
 	mc.SetWidth(50)
+	//manualState
+	ms := textinput.New()
+	ms.Placeholder = "State of Origin (Optional)..."
+	ms.SetWidth(50)
+	//manualCodec
+	mCodec := textinput.New()
+	mCodec.Placeholder = "Codec (Optional)..."
+	mCodec.SetWidth(50)
 	//manualImage
 	mi := textinput.New()
 	mi.Placeholder = "Link/Path to Image (Optional)..."
@@ -107,8 +122,11 @@ func initialModel() model {
 		panelColor:      pi,
 		manualName:      mn,
 		manualLink:      ml,
+		manualHome:      mh,
 		manualTags:      mt,
 		manualCountry:   mc,
+		manualState:     ms,
+		manualCodec:     mCodec,
 		manualImage:     mi,
 		manualFocusIdx:  0,
 		themeFocusIdx:   0,
