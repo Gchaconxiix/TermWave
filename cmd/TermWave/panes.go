@@ -38,7 +38,7 @@ func (m model) drawPanes() string {
 		leftTitle = " Saved Stations "
 
 		if len(m.savedStations) == 0 {
-			leftContent += "No stations saved\nSearch for a station in Stations->Add Station"
+			leftContent += "No stations Saved\nSearch or add a new Station in the Stations Tab"
 		} else {
 			itemsPerPage := m.getItemsPerPage()
 
@@ -73,7 +73,7 @@ func (m model) drawPanes() string {
 	//Now to modify the right pane code
 
 	if !m.isPlaying && m.currentStation.Name == "" {
-		rightContent = "Please Select a Station... \nSearch for a new station in Station->Add Station"
+		rightContent = "Please Select a Station... \nSearch for a new Station in Station->Station Search"
 	} else {
 		rightContent += fmt.Sprintf("Station: %s\nTitle: %s\n\n", stationName, m.currentTitle)
 	}
