@@ -1,10 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os/exec"
 	"strings"
-	"bufio"
 )
 
 var currentPlayer *exec.Cmd
@@ -43,6 +43,9 @@ func PlayStream(streamURL string) error {
 				}
 			}
 		}
+		if err := scanner.Err(); err != nil {
+			fmt.Printf("Error in bufio Scanner for Icy-Titles: %v", err)
+		}
 	}()
 
 	return nil
@@ -55,4 +58,3 @@ func StopStream() {
 		currentPlayer = nil
 	}
 }
-

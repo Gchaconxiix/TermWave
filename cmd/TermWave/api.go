@@ -33,7 +33,7 @@ func StationSearch(searchTerm string) ([]Station, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Request failed: %w", err)
 	}
-	req.Header.Set("User-Agent", "TermWave/0.1")
+	req.Header.Set("User-Agent", userAgent)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -70,7 +70,7 @@ func DownloadImage(imageUrl string) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("Failed to retrieve image: %w", err)
 		}
-		req.Header.Set("User-Agent", "TermWave/0.1")
+		req.Header.Set("User-Agent", userAgent)
 
 		client := &http.Client{}
 		resp, err := client.Do(req)
@@ -130,7 +130,7 @@ func RegisterStationClick(UUID string) error {
 	if err != nil {
 		return err
 	}
-	req.Header.Set("User-Agent", "TermWave/0.1")
+	req.Header.Set("User-Agent", userAgent)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

@@ -8,9 +8,11 @@ import (
 )
 
 var (
-	appVer  string = "0.5"
-	author  string = "Gabriel Chacon"
-	contrib string = "Wolfie574"
+	appName   string = "TermWave"
+	appVer    string = "0.6"
+	author    string = "Gabriel Chacon"
+	contrib   string = "Wolfie574"
+	userAgent string = fmt.Sprintf("%s/%s", appName, appVer)
 )
 
 func main() {

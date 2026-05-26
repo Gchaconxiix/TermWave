@@ -16,7 +16,7 @@ func (m model) renderPopup() *lipgloss.Layer {
 	case "manualEntry":
 		popupContent = m.renderManualEntry()
 	case "about":
-		popupContent = fmt.Sprintf("About:\nAuthor: %s\nBug tester: %s\nVersion: TermWave %s", author, contrib, appVer)
+		popupContent = fmt.Sprintf("About:\nAuthor: %s\nBug tester: %s\nVersion: %s %s", author, contrib, appName, appVer)
 	case "theme":
 		popupContent = m.renderThemePopup()
 	case "info":
