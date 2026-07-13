@@ -1,12 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 
 	"charm.land/bubbles/v2/textinput"
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/dolmen-go/kittyimg"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 )
 
 type stationsLoadedMsg []Station
@@ -15,7 +21,7 @@ type imageLoadMsg string
 type titleUpdateMsg string
 type stationClickMsg string
 
-var titleChannel = make(chan string, 10) //buffer size
+var titleChannel = make(chan string, 10)
 
 type model struct {
 	width           int
@@ -26,11 +32,11 @@ type model struct {
 	menuTitles      []string
 	menuItems       [][]string
 	stations        []Station
-	savedStations   []Station //Page number, each will hold 8
+	savedStations   []Station
 	stationCursor   int
-	viewState       string //Tells me if I am in search or saved sations mode
-	savedPage       int    //Page #s
-	focused         string //The window that the cursor should be on
+	viewState       string
+	savedPage       int
+	focused         string
 	err             error
 	currentStation  Station
 	currentTitle    string
@@ -69,40 +75,39 @@ func initialModel() model {
 	pi.Placeholder = "Panel"
 	pi.CharLimit = 7
 	pi.SetWidth(10)
-	//manualName
+
 	mn := textinput.New()
 	mn.Placeholder = "Name of Station..."
 	mn.SetWidth(50)
-	//manualLink
+
 	ml := textinput.New()
 	ml.Placeholder = "Station/Youtube link..."
 	ml.SetWidth(50)
-	//manual Home Page
+
 	mh := textinput.New()
 	mh.Placeholder = "Homepage of Station (Optional)..."
 	mh.SetWidth(50)
-	//manualTags
+
 	mt := textinput.New()
 	mt.Placeholder = "Station Tags (Optional)..."
 	mt.SetWidth(50)
-	//manualCountry
+
 	mc := textinput.New()
 	mc.Placeholder = "Country of Origin (Optional)..."
 	mc.SetWidth(50)
-	//manualState
+
 	ms := textinput.New()
 	ms.Placeholder = "State of Origin (Optional)..."
 	ms.SetWidth(50)
-	//manualCodec
+
 	mCodec := textinput.New()
 	mCodec.Placeholder = "Codec (Optional)..."
 	mCodec.SetWidth(50)
-	//manualImage
+
 	mi := textinput.New()
 	mi.Placeholder = "Link/Path to Image (Optional)..."
 	mi.SetWidth(50)
 
-	//Loading saved stations
 	loadedStations, err := loadStations()
 	if err != nil || loadedStations == nil {
 		loadedStations = []Station{}
@@ -112,8 +117,8 @@ func initialModel() model {
 		stations:        []Station{},
 		savedStations:   loadedStations,
 		stationCursor:   0,
-		focused:         "stations", //This tells me which part is in focus
-		viewState:       "saved",    //For the left pane
+		focused:         "stations",
+		viewState:       "saved",
 		isPlaying:       false,
 		savedPage:       0,
 		searchInput:     ti,
@@ -149,7 +154,6 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case stationsLoadedMsg:
-		//Making a loop so I can check if the station is already saved
 		for i, newStation := range msg {
 			for _, savedStation := range m.savedStations {
 				if newStation.URL == savedStation.URL {
@@ -186,27 +190,26 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 
-		//Margin safety check for Dynamic item lists
-		if m.viewState == "saved" { //Only works on Saved Pages for now
+		// Margin safety check for dynamic item lists
+		if m.viewState == "saved" {
 			itemsPerPage := m.getItemsPerPage()
 			if len(m.savedStations) > 0 {
 				totalPages := (len(m.savedStations) + itemsPerPage - 1) / itemsPerPage
 				if m.savedPage >= totalPages {
-					m.savedPage = totalPages - 1 //In case the window resize swallowed the page
+					m.savedPage = totalPages - 1
 				}
 			} else {
 				m.savedPage = 0
 			}
 
 			startIndex := m.savedPage * itemsPerPage
-			itemsOnPage := len(m.savedStations) - startIndex //Items on the currently selected page
+			itemsOnPage := len(m.savedStations) - startIndex
 
 			if itemsOnPage > itemsPerPage {
 				itemsOnPage = itemsPerPage
 			} else if itemsOnPage < 0 {
 				itemsOnPage = 0
 			}
-			//This should prevent the cursor from falling off the bottom
 			if m.stationCursor >= itemsOnPage && itemsOnPage > 0 {
 				m.stationCursor = itemsOnPage - 1
 			}
@@ -255,7 +258,6 @@ func (m model) View() tea.View {
 		layers = append(layers, menuLayer)
 	}
 
-	//now to call the popup handler
 	if m.focused != "stations" && m.focused != "toolbar" {
 		layers = append(layers, m.renderPopup())
 	}
@@ -263,25 +265,28 @@ func (m model) View() tea.View {
 	compositor := lipgloss.NewCompositor(layers...)
 	finalUI := compositor.Render()
 
-	//Image needs to be drawn AFTER the rendering for BubbleTea
+	// Image rendered after BubbleTea compositing
 	if m.currImgData != "" && (m.focused == "stations" || m.focused == "toolbar") {
 		availW := m.width - 6
 		leftW := int(float64(availW) * 0.6)
 		col := leftW + 6
 		row := 12
 
-		cursorMove := fmt.Sprintf("\x1b[%d;%dH", row, col) //Have to put the exact escape sequence in the right place
+		cursorMove := fmt.Sprintf("\x1b[%d;%dH", row, col)
 		hideCursor := "\x1b[?25l"
 
-		finalUI += cursorMove + m.currImgData + hideCursor
+		imgData := m.currImgData
+		if isKittyTerminal() {
+			imgData = injectKittyPixelSize(m.currImgData, 320)
+		}
+
+		finalUI += cursorMove + imgData + hideCursor
 	}
 
 	v := tea.NewView(finalUI)
 	v.AltScreen = true
 	return v
 }
-
-//Helpers Below
 
 func fetchStations(query string) tea.Cmd {
 	return func() tea.Msg {
@@ -294,6 +299,9 @@ func fetchStations(query string) tea.Cmd {
 }
 
 func (m model) showImage() tea.Cmd {
+	if isKittyTerminal() {
+		return m.showImageKitty()
+	}
 	return func() tea.Msg {
 		imageUrl, err := DownloadImage(m.currentStation.Image)
 		if err != nil {
@@ -332,4 +340,47 @@ func (m model) getItemsPerPage() int {
 		return 1
 	}
 	return items
+}
+
+func isKittyTerminal() bool {
+	return os.Getenv("KITTY_WINDOW_ID") != "" || os.Getenv("TERM") == "xterm-kitty"
+}
+
+func injectKittyPixelSize(kittyData string, pixelWidth int) string {
+	cellWidth := 8
+	cols := max(pixelWidth / cellWidth, 1)
+
+	sizeParam := fmt.Sprintf(",c=%d", cols)
+	
+	insertMarker := ",t=d"
+	if idx := bytes.Index([]byte(kittyData), []byte(insertMarker)); idx != -1 {
+		return kittyData[:idx] + sizeParam + kittyData[idx:]
+	}
+	if idx := bytes.IndexByte([]byte(kittyData), ';'); idx != -1 {
+		return kittyData[:idx] + sizeParam + kittyData[idx:]
+	}
+	return kittyData
+}
+
+func (m model) showImageKitty() tea.Cmd {
+	return func() tea.Msg {
+		imagePath, err := DownloadImage(m.currentStation.Image)
+		if err != nil {
+			return nil
+		}
+
+		file, err := os.Open(imagePath)
+		if err != nil {
+			return nil
+		}
+		defer file.Close()
+
+		var buf bytes.Buffer
+		err = kittyimg.Transcode(&buf, file)
+		if err != nil {
+			return nil
+		}
+
+		return imageLoadMsg(buf.String())
+	}
 }
