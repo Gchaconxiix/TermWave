@@ -9,9 +9,10 @@ Program was made using Go and the BubbleTea V2 framework. It is essentially a fr
 I wanted something that I can run on both my PC and on a very low-power CyberDeck for traveling/camping, so I decided to make this.
 
 ⚠️ Termwave is currently still being developed. While I will be actively adding/fixing features, things may break and some things may be removed until I can fix them.
-⚠️ MPV is required for audio playback! Chafa is required for displaying station images.
+⚠️ MPV is required for audio playback! Chafa is required for displaying station images (Unless using Kitty)
 
 ### Currently Working/Recent Changes:
+    * Kitty Terminal Support (Finally!)
     * Search for internet radio stations (Using api.radio-browser)
     * Functionality to Save and Remove Stations has been added
     * Added artwork through Chafa
@@ -24,7 +25,6 @@ I wanted something that I can run on both my PC and on a very low-power CyberDec
     * Added https Manual Station addition (Also works with Youtube links with yt-dlp)
 ### Roadmap/Things to fix:
     * Make the UI look better
-    * Kitty images still do not work properly. (If you have any ideas please let me know!)
     * Implement the rest of the menu options before an actual release
 Will be making releases hopefully in the near-future
 
@@ -58,8 +58,7 @@ Arch
 $ sudo pacman -S mpv
 $ sudo pacman -S chafa
 ```
-I have had good artwork results running this on Konsole, mlterm and Xterm with vt340 emulation enabled. The program should run on any Terminal Emulator though.
-⚠️ Note: Artwork does NOT appear on Kitty very well, it is a known issue I am trying to find a solution for.
+I have had good artwork results running this on Konsole, Kity, mlterm and Xterm with vt340 emulation enabled. The program should run on any Terminal Emulator though.
 
 Thank you for trying it out! I hope to make it better in the near future!
 
