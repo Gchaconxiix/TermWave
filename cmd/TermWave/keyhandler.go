@@ -292,7 +292,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.activeMenuIndex = (m.activeMenuIndex + 1) % len(m.menuTitles)
 			case "left", "h":
 				m.activeMenuIndex = ((m.activeMenuIndex - 1) + len(m.menuTitles)) % len(m.menuTitles)
-			case "enter", "down", "s":
+			case "enter", "down", "j":
 				m.menuOpen = true
 			case "q", "esc":
 				StopStream()
