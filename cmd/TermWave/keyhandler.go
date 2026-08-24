@@ -349,7 +349,8 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			case "x", "delete":
 				if m.viewState == "saved" && len(m.savedStations) > 0 {
-					startIndex := m.savedPage * 25
+					itemsPerPage := m.getItemsPerPage()
+					startIndex := m.savedPage * itemsPerPage
 					actualIndex := startIndex + m.stationCursor
 
 					m.savedStations = append(m.savedStations[:actualIndex], m.savedStations[actualIndex+1:]...)
@@ -362,7 +363,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 					if startIndex >= len(m.savedStations) && m.savedPage > 0 {
 						m.savedPage--
-						m.stationCursor = 7
+						m.stationCursor = m.getItemsPerPage() - 1
 					}
 				}
 			case "+":
@@ -377,7 +378,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 						if m.stationCursor < 0 && m.savedPage > 0 {
 							m.savedPage--
-							m.stationCursor = 24
+							m.stationCursor = m.getItemsPerPage() - 1
 						}
 					}
 				}
@@ -391,7 +392,7 @@ func (m model) keyHandler(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.savedStations[actualIndex+1], m.savedStations[actualIndex] = m.savedStations[actualIndex], m.savedStations[actualIndex+1]
 						m.stationCursor++
 
-						if m.stationCursor > 24 {
+						if m.stationCursor >= m.getItemsPerPage() {
 							m.savedPage++
 							m.stationCursor = 0
 						}
